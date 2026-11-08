@@ -1,0 +1,6 @@
+{
+  "name": "Risør Ju Jutsu klubb - Tradisjonell Japansk Kampsport",
+  "description": "Offisiell nettside for Risør Ju Jutsu klubb i Risørhallen. Treningstider, dojo, instruktører, sommerleir, Vipps-betaling og vår stilart ledet av Soke Yamaue (København).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
