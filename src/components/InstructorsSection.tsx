@@ -313,8 +313,16 @@ export const InstructorsSection: React.FC<InstructorsSectionProps> = ({
 
       {/* Full Dedicated Profile Modal View */}
       {selectedInstructor && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-stone-950/80 backdrop-blur-md animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col border border-stone-200 shadow-2xl overflow-hidden relative">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-stone-950/80 backdrop-blur-md overflow-y-auto animate-in fade-in"
+          onClick={() => setSelectedInstructorId(null)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div 
+            className="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col border border-stone-200 shadow-2xl overflow-hidden relative my-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
             
             {/* Header Hero Image */}
             <div className="relative h-64 sm:h-72 bg-stone-900 shrink-0">
@@ -477,8 +485,16 @@ export const InstructorsSection: React.FC<InstructorsSectionProps> = ({
 
       {/* Edit Instructor Modal */}
       {isEditing && editingInstructor && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/75 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 space-y-4 border border-stone-200 shadow-2xl">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/75 backdrop-blur-sm overflow-y-auto animate-in fade-in"
+          onClick={() => setIsEditing(false)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div 
+            className="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 space-y-4 border border-stone-200 shadow-2xl my-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between border-b pb-3">
               <h3 className="font-heading font-bold text-base text-stone-900">
                 Rediger profil: {editingInstructor.name}

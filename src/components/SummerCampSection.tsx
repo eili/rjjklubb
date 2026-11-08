@@ -355,8 +355,16 @@ export const SummerCampSection: React.FC<SummerCampSectionProps> = ({
 
       {/* Lightbox Modal for Photo Gallery */}
       {activePhoto && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-stone-950/90 backdrop-blur-md animate-in fade-in">
-          <div className="bg-stone-900 text-white rounded-3xl max-w-3xl w-full border border-stone-800 shadow-2xl overflow-hidden relative flex flex-col">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-stone-950/90 backdrop-blur-md overflow-y-auto animate-in fade-in"
+          onClick={() => setActivePhoto(null)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div 
+            className="bg-stone-900 text-white rounded-3xl max-w-3xl w-full border border-stone-800 shadow-2xl overflow-hidden relative flex flex-col my-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
             {/* Top Toolbar */}
             <div className="p-4 flex items-center justify-between border-b border-stone-800">
               <div className="flex items-center gap-2">
