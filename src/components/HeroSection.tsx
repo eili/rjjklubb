@@ -49,7 +49,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
           <span className="font-semibold text-amber-400">{clubConfig.clubName}</span>
           <span className="text-stone-600">•</span>
-          <span className="text-stone-200 font-medium">Klubbleder: Kittel Gjernes (3. Dan)</span>
+          <span className="text-stone-200 font-medium">Klubbleder: Kittel Gjernes (4. Dan)</span>
           <span className="text-stone-600">•</span>
           <span className="text-stone-300">Stilart: {clubConfig.sokeName} ({clubConfig.sokeCity})</span>
         </div>
@@ -123,7 +123,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   className="w-14 h-14 rounded-xl object-cover border border-amber-500/40 group-hover:scale-105 transition-transform"
                 />
                 <div className="absolute -bottom-1 -right-1 bg-amber-500 text-stone-950 text-[9px] font-black px-1.5 py-0.5 rounded font-mono shadow">
-                  3. DAN
+                  4. DAN
                 </div>
               </div>
 
@@ -138,7 +138,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   Kittel Gjernes
                 </div>
                 <p className="text-xs text-stone-400 truncate">
-                  3. Dan • Hovedinstruktør og klubbleder i Risør
+                  4. Dan • Hovedinstruktør og klubbleder i Risør
                 </p>
               </div>
 
