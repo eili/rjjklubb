@@ -54,11 +54,11 @@ export default function App() {
           if (inst.id === 'kittel-gjernes') {
             return {
               ...inst,
-              rank: '3. Dan',
+              rank: '4. dan',
               title: 'Sensei / Klubbleder',
               role: 'Klubbleder og Hovedinstruktør Risør',
               certifications: [
-                '3. Dan Ju Jutsu (gradert v/ Soke Yamaue)',
+                '4. dan Ju Jutsu (gradert v/ Soke Yamaue)',
                 'Trener Sertifisering - Norges Kampsportforbund (NKF)',
                 'Politiattest og førstehjelpsgodkjenning'
               ],
@@ -323,7 +323,7 @@ export default function App() {
                         className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                       />
                       <div className="absolute top-4 left-4 bg-stone-950/90 text-amber-400 border border-amber-500/40 px-3 py-1 rounded-xl text-xs font-mono font-bold shadow">
-                        3. Dan Sensei
+                        4. dan Sensei
                       </div>
                       <div className="absolute bottom-4 left-4 right-4 bg-stone-950/85 backdrop-blur-md p-3.5 rounded-xl border border-stone-800 text-white text-xs">
                         <span className="font-bold text-amber-400 block text-xs">Klubbleder & Hovedinstruktør</span>
@@ -341,7 +341,7 @@ export default function App() {
                     </h2>
                     <div className="flex flex-wrap items-center gap-2.5 text-xs text-stone-600 font-medium">
                       <span className="px-2.5 py-1 rounded-md bg-stone-900 text-amber-400 font-mono font-bold text-xs">
-                        3. Dan
+                        4. dan
                       </span>
                       <span>Klubbleder og Hovedinstruktør Risør Ju Jutsu klubb</span>
                     </div>
@@ -351,7 +351,7 @@ export default function App() {
                     </div>
 
                     <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
-                      Kittel Gjernes er klubbleder for Risør Ju Jutsu klubb og innehar 3. Dan. 
+                      Kittel Gjernes er klubbleder for Risør Ju Jutsu klubb og innehar 4. dan. 
                       Som direkte elev under stilartsoverhode Soke Yamaue (København) leder Kittel 
                       undervisningen i Risørhallen for barn, ungdom, voksne nybegynnere og viderekomne. 
                       Han er sertifisert instruktør under Norges Kampsportforbund med fokus på teknisk presisjon, trygghet og fellesskap.
