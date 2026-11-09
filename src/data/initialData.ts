@@ -17,7 +17,7 @@ export const initialClubConfig: ClubConfig = {
   vippsNumber: '614920', // Norsk Vippsnummer for klubben
   contactPerson: {
     name: 'Kittel Gjernes',
-    role: 'Klubbleder (3. Dan) og Hovedinstruktør',
+    role: 'Klubbleder (4. Dan) og Hovedinstruktør',
     email: 'kittel@risorjujutsu.no',
     phone: '+47 920 14 550',
   },
@@ -56,15 +56,15 @@ export const initialInstructors: Instructor[] = [
     id: 'kittel-gjernes',
     name: 'Kittel Gjernes',
     title: 'Sensei / Klubbleder',
-    rank: '3. Dan',
+    rank: '4. Dan',
     experienceYears: 25,
     role: 'Klubbleder og Hovedinstruktør Risør',
-    bio: 'Kittel Gjernes er klubbleder for Risør Ju Jutsu klubb og innehar 3. Dan. Han er direkte elev under stilartsoverhode Soke Yamaue i København med lang erfaring som instruktør for barn, ungdom, voksne og selvforsvarskurs i Risør og Agder. Sertifisert instruktør under Norges Kampsportforbund med fokus på trygg progresjon, respekt, godt samhold i Risørhallen og presis biomekanikk.',
+    bio: 'Kittel Gjernes er klubbleder for Risør Ju Jutsu klubb og innehar 4. Dan. Han er direkte elev under stilartsoverhode Soke Yamaue i København med lang erfaring som instruktør for barn, ungdom, voksne og selvforsvarskurs i Risør og Agder. Sertifisert instruktør under Norges Kampsportforbund med fokus på trygg progresjon, respekt, godt samhold i Risørhallen og presis biomekanikk.',
     image: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=1000&q=80',
     specialties: ['Nage-waza (Kast)', 'Atemi-waza (Slag/støt)', 'Praktisk selvforsvar', 'Instruktøropplæring'],
     philosophy: '«Ju Jutsu i Risør bygger trygge, modige og sindige mennesker både på og utenfor tatamien.»',
     certifications: [
-      '3. Dan Ju Jutsu (gradert v/ Soke Yamaue)',
+      '4. Dan Ju Jutsu (gradert v/ Soke Yamaue)',
       'Trener Sertifisering - Norges Kampsportforbund (NKF)',
       'Politiattest og førstehjelpsgodkjenning'
     ],
@@ -193,7 +193,7 @@ export const initialCampPhotos: CampPhoto[] = [
     id: 'photo-2',
     url: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=1200&q=80',
     title: 'Intensiv kaste- og balansebruddstrening',
-    caption: 'Klubbleder Kittel Gjernes (3. Dan) veileder deltagerne gjennom dynamiske Nage-waza kasteteknikker på tatami-mattene i Risørhallen.',
+    caption: 'Klubbleder Kittel Gjernes (4. Dan) veileder deltagerne gjennom dynamiske Nage-waza kasteteknikker på tatami-mattene i Risørhallen.',
     year: 2025,
     category: 'trening',
   },
@@ -276,7 +276,7 @@ export const initialSummerCamp: SummerCampInfo = {
       day: 'Lørdag',
       time: '09:30 – 12:00',
       title: 'Modul 1: Kansetsu-waza – Leddlåsens Anatomi',
-      instructor: 'Soke Yamaue & Kittel Gjernes (3. Dan)',
+      instructor: 'Soke Yamaue & Kittel Gjernes (4. Dan)',
       description: 'Mikrojusteringer i håndledds- og skulderlåser. Hvordan oppnå maksimal kontroll med minimal anstrengelse.',
     },
     {
@@ -290,7 +290,7 @@ export const initialSummerCamp: SummerCampInfo = {
       day: 'Lørdag',
       time: '13:30 – 16:00',
       title: 'Modul 2: Nage-waza & Bakkekontroll',
-      instructor: 'Kittel Gjernes (3. Dan) & Sensei Marte',
+      instructor: 'Kittel Gjernes (4. Dan) & Sensei Marte',
       description: 'Tradisjonelle kast fra balansebrudd (kuzushi) direkte over i låser på bakken.',
     },
     {
@@ -408,7 +408,7 @@ export const initialSiteContent: SiteContent = {
     subtitle: 'Stilartens Grunnlegger & Hombu Dojo København',
     intro: 'Risør Ju Jutsu klubb er stolt tilknyttet og veiledet direkte av stormester Soke Yamaue (10. Dan Hanshi), lokalisert i København, Danmark. Her kan du lese om historien, stilartens særpreg og vår ubrutte linje til stormesteren.',
     bioText1: 'Soke Yamaue har viet over et halvt århundre til tradisjonell japansk Budo. Han er grunnlegger og åndelig overhode for stilarten med hovedsete i sitt Hombu Dojo i København. Hans undervisning kjennetegnes av dyp biomekanisk forståelse, Aiki-prinsipper og overføring av tradisjonell koryu-kunnskap.',
-    bioText2: 'Gjennom sitt tette samarbeid med klubbleder Kittel Gjernes (3. Dan) besøker Soke Yamaue Risørhallen årlig for klubbens sommerleir og internasjonale Dan-graderinger.',
+    bioText2: 'Gjennom sitt tette samarbeid med klubbleder Kittel Gjernes (4. Dan) besøker Soke Yamaue Risørhallen årlig for klubbens sommerleir og internasjonale Dan-graderinger.',
     image: 'https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&w=800&q=80',
     quote: '«Det ekte mesterskapet ligger ikke i å beseire andre, men i å beherske seg selv.»',
   },
@@ -427,7 +427,7 @@ export const initialMediaLibrary: MediaItem[] = [
   },
   {
     id: 'media-2',
-    title: 'Klubbleder Kittel Gjernes (3. Dan)',
+    title: 'Klubbleder Kittel Gjernes (4. Dan)',
     url: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=1200&q=80',
     category: 'instruktor',
     source: 'preset',
