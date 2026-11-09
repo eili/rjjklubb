@@ -1,4 +1,4 @@
-import { ClubConfig, Instructor, SummerCampInfo, TrainingClass, VippsProduct, CampPhoto, AdminMFAConfig, SiteContent } from '../types';
+import { ClubConfig, Instructor, SummerCampInfo, TrainingClass, VippsProduct, CampPhoto, AdminMFAConfig, SiteContent, MediaItem } from '../types';
 
 export const initialMFAConfig: AdminMFAConfig = {
   isEnabled: true,
@@ -413,4 +413,180 @@ export const initialSiteContent: SiteContent = {
     quote: '«Det ekte mesterskapet ligger ikke i å beseire andre, men i å beherske seg selv.»',
   },
 };
+
+export const initialMediaLibrary: MediaItem[] = [
+  {
+    id: 'media-1',
+    title: 'Tradisjonell Japansk Dojo & Tatami',
+    url: 'https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&w=1600&q=80',
+    category: 'dojo',
+    source: 'unsplash',
+    photographer: 'Sujith M',
+    description: 'Stemningsfull dojo med tatami-matter og klassisk belysning.',
+    addedAt: '2026-01-10',
+  },
+  {
+    id: 'media-2',
+    title: 'Klubbleder Kittel Gjernes (3. Dan)',
+    url: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=1200&q=80',
+    category: 'instruktor',
+    source: 'preset',
+    photographer: 'Risør Ju Jutsu',
+    description: 'Hovedinstruktør og klubbleder i dojoen i Risørhallen.',
+    addedAt: '2026-01-10',
+  },
+  {
+    id: 'media-3',
+    title: 'Stormester Soke Yamaue (10. Dan)',
+    url: 'https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&w=1000&q=80',
+    category: 'tradisjon',
+    source: 'preset',
+    photographer: 'Hombu Dojo København',
+    description: 'Portrett av stilartsoverhode Soke Yamaue.',
+    addedAt: '2026-01-10',
+  },
+  {
+    id: 'media-4',
+    title: 'Dynamisk Ju Jitsu Kast (Nage-waza)',
+    url: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=1600&q=80',
+    category: 'forside',
+    source: 'unsplash',
+    photographer: 'Dylan Gillis',
+    description: 'Presis teknisk bevegelse og balansebrudd under trening.',
+    addedAt: '2026-01-12',
+  },
+  {
+    id: 'media-5',
+    title: 'Morgen-meditasjon (Mokuso) i Risør',
+    url: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=1600&q=80',
+    category: 'sommerleir',
+    source: 'unsplash',
+    photographer: 'Kike Vega',
+    description: 'Tradisjonell mental samling og ro før treningsøkten.',
+    addedAt: '2026-01-15',
+  },
+  {
+    id: 'media-6',
+    title: 'Sort Belte & Kampsportdrakt (Gi)',
+    url: 'https://images.unsplash.com/photo-1517649763962-0c623266ddc0?auto=format&fit=crop&w=1600&q=80',
+    category: 'tradisjon',
+    source: 'unsplash',
+    photographer: 'Markus Spiske',
+    description: 'Sort belte (Dan-grad) og tradisjonell hvit drakt.',
+    addedAt: '2026-01-20',
+  },
+  {
+    id: 'media-7',
+    title: 'Risør Kystidyll & Svaberg',
+    url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80',
+    category: 'sommerleir',
+    source: 'unsplash',
+    photographer: 'Sean Oulashin',
+    description: 'Den hvite kystbyen Risør under sommerleiren.',
+    addedAt: '2026-02-01',
+  },
+  {
+    id: 'media-8',
+    title: 'Intensiv Bakkekamp & Lås (Ne-waza)',
+    url: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=1600&q=80',
+    category: 'dojo',
+    source: 'unsplash',
+    photographer: 'Gilles Lambert',
+    description: 'Trygg teknisk øvelse på tatamien.',
+    addedAt: '2026-02-05',
+  },
+];
+
+export interface UnsplashPreset {
+  id: string;
+  title: string;
+  url: string;
+  photographer: string;
+  category: 'dojo' | 'tradisjon' | 'instruktor' | 'forside' | 'sommerleir' | 'annet';
+  tags: string[];
+}
+
+export const curatedUnsplashCatalog: UnsplashPreset[] = [
+  {
+    id: 'un-1',
+    title: 'Japansk Dojo & Trening',
+    url: 'https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&w=1600&q=80',
+    photographer: 'Sujith M',
+    category: 'dojo',
+    tags: ['dojo', 'tatami', 'japan', 'jujitsu', 'budo'],
+  },
+  {
+    id: 'un-2',
+    title: 'Kasteteknikk & Balanse',
+    url: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=1600&q=80',
+    photographer: 'Gilles Lambert',
+    category: 'forside',
+    tags: ['kast', 'trening', 'judo', 'jujitsu', 'nage-waza'],
+  },
+  {
+    id: 'un-3',
+    title: 'Sort Belte Knute & Gi',
+    url: 'https://images.unsplash.com/photo-1517649763962-0c623266ddc0?auto=format&fit=crop&w=1600&q=80',
+    photographer: 'Markus Spiske',
+    category: 'tradisjon',
+    tags: ['sort belte', 'dan', 'gi', 'gradering', 'drakt'],
+  },
+  {
+    id: 'un-4',
+    title: 'Ungdom & Fallteknikk',
+    url: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=1600&q=80',
+    photographer: 'Dylan Gillis',
+    category: 'instruktor',
+    tags: ['ungdom', 'barn', 'instruktør', 'trener'],
+  },
+  {
+    id: 'un-5',
+    title: 'Samurai Ånd & Fokus',
+    url: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=1600&q=80',
+    photographer: 'Europeana',
+    category: 'tradisjon',
+    tags: ['samurai', 'katana', 'bushido', 'historie', 'japan'],
+  },
+  {
+    id: 'un-6',
+    title: 'Morgenro & Meditasjon',
+    url: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=1600&q=80',
+    photographer: 'Kike Vega',
+    category: 'sommerleir',
+    tags: ['mokuso', 'meditasjon', 'ro', 'pust', 'mental'],
+  },
+  {
+    id: 'un-7',
+    title: 'Sommerkyst i Risør',
+    url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80',
+    photographer: 'Sean Oulashin',
+    category: 'sommerleir',
+    tags: ['risør', 'sommer', 'kyst', 'sjø', 'leir'],
+  },
+  {
+    id: 'un-8',
+    title: 'Fellesskap & Kampånd',
+    url: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1600&q=80',
+    photographer: 'Karsten Winegeart',
+    category: 'forside',
+    tags: ['samhold', 'fellesskap', 'styrke', 'respekt'],
+  },
+  {
+    id: 'un-9',
+    title: 'Leddmanipulasjon & Grep',
+    url: 'https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?auto=format&fit=crop&w=1600&q=80',
+    photographer: 'Scott Webb',
+    category: 'tradisjon',
+    tags: ['grep', 'leddlås', 'kansetsu', 'selvforsvar'],
+  },
+  {
+    id: 'un-10',
+    title: 'Kampsport Sensei Trener',
+    url: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1600&q=80',
+    photographer: 'Mitchell Griest',
+    category: 'instruktor',
+    tags: ['sensei', 'trener', 'hovedinstruktør', 'veileder'],
+  },
+];
+
 

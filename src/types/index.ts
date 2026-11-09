@@ -147,3 +147,15 @@ export interface SiteContent {
   };
 }
 
+export interface MediaItem {
+  id: string;
+  url: string;
+  title: string;
+  category: 'forside' | 'instruktor' | 'sommerleir' | 'dojo' | 'tradisjon' | 'annet';
+  source: 'upload' | 'unsplash' | 'preset';
+  addedAt?: string;
+  photographer?: string;
+  description?: string;
+}
+
+

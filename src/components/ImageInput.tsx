@@ -1,5 +1,8 @@
 import React, { useRef, useState } from 'react';
-import { Upload, Link as LinkIcon, X, Image as ImageIcon, Sparkles, Check } from 'lucide-react';
+import { Upload, Link as LinkIcon, X, Image as ImageIcon, Sparkles, Check, Compass } from 'lucide-react';
+import { MediaItem } from '../types';
+import { initialMediaLibrary } from '../data/initialData';
+import { MediaGallery } from './MediaGallery';
 
 interface ImageInputProps {
   label: string;
@@ -8,6 +11,8 @@ interface ImageInputProps {
   helperText?: string;
   aspectRatio?: 'square' | 'video' | 'portrait';
   presets?: { name: string; url: string }[];
+  mediaLibrary?: MediaItem[];
+  onUpdateMediaLibrary?: (items: MediaItem[]) => void;
 }
 
 export const ImageInput: React.FC<ImageInputProps> = ({
@@ -17,10 +22,13 @@ export const ImageInput: React.FC<ImageInputProps> = ({
   helperText,
   aspectRatio = 'video',
   presets,
+  mediaLibrary = initialMediaLibrary,
+  onUpdateMediaLibrary,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showUrlInput, setShowUrlInput] = useState(false);
+  const [showGalleryPicker, setShowGalleryPicker] = useState(false);
 
   // Resize and compress image using HTML Canvas
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,7 +76,6 @@ export const ImageInput: React.FC<ImageInputProps> = ({
     };
 
     reader.readAsDataURL(file);
-    // Reset file input so same file can be picked again if desired
     e.target.value = '';
   };
 
@@ -92,7 +99,7 @@ export const ImageInput: React.FC<ImageInputProps> = ({
         </label>
         {value && (
           <span className="text-[10px] font-mono text-stone-500">
-            {value.startsWith('data:') ? 'Opplastet bilde' : 'Ekstern URL'}
+            {value.startsWith('data:') ? 'Opplastet bilde' : 'Ekstern / Unsplash'}
           </span>
         )}
       </div>
@@ -110,7 +117,7 @@ export const ImageInput: React.FC<ImageInputProps> = ({
               <button
                 type="button"
                 onClick={() => onChange('')}
-                className="absolute top-1.5 right-1.5 p-1 bg-stone-900/80 hover:bg-red-600 text-white rounded-lg transition-colors shadow"
+                className="absolute top-1.5 right-1.5 p-1 bg-stone-900/80 hover:bg-red-600 text-white rounded-lg transition-colors shadow cursor-pointer"
                 title="Fjern bilde"
               >
                 <X className="w-3.5 h-3.5" />
@@ -137,12 +144,21 @@ export const ImageInput: React.FC<ImageInputProps> = ({
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
+              onClick={() => setShowGalleryPicker(true)}
+              className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-stone-950 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm transition-all active:scale-95"
+            >
+              <Compass className="w-3.5 h-3.5" />
+              <span>Velg fra Galleri / Unsplash</span>
+            </button>
+
+            <button
+              type="button"
               disabled={isProcessing}
               onClick={() => fileInputRef.current?.click()}
               className="px-3 py-1.5 bg-stone-900 hover:bg-stone-800 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm transition-all active:scale-95 disabled:opacity-50"
             >
               <Upload className="w-3.5 h-3.5 text-amber-400" />
-              <span>{isProcessing ? 'Behandler bilde...' : 'Last opp fra mobil/PC'}</span>
+              <span>{isProcessing ? 'Behandler bilde...' : 'Last opp fil'}</span>
             </button>
 
             <button
@@ -151,7 +167,7 @@ export const ImageInput: React.FC<ImageInputProps> = ({
               className="px-3 py-1.5 bg-white hover:bg-stone-100 text-stone-700 border border-stone-300 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"
             >
               <LinkIcon className="w-3.5 h-3.5 text-stone-500" />
-              <span>{showUrlInput ? 'Skjul URL-felt' : 'Lim inn bilde-URL'}</span>
+              <span>{showUrlInput ? 'Skjul URL' : 'Lim inn URL'}</span>
             </button>
           </div>
 
@@ -205,6 +221,66 @@ export const ImageInput: React.FC<ImageInputProps> = ({
           )}
         </div>
       </div>
+
+      {/* Gallery & Unsplash Picker Modal */}
+      {showGalleryPicker && (
+        <div 
+          className="fixed inset-0 z-[65] bg-stone-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 animate-in fade-in"
+          onClick={() => setShowGalleryPicker(false)}
+        >
+          <div 
+            className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col border border-stone-200 shadow-2xl overflow-hidden my-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="bg-stone-900 text-white px-5 py-4 flex items-center justify-between border-b border-stone-800 shrink-0">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-amber-500 text-stone-950 flex items-center justify-center font-bold text-sm">
+                  <Compass className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-heading font-bold text-sm text-white">
+                    Velg bilde fra Galleri eller Unsplash
+                  </h3>
+                  <p className="text-[11px] text-stone-400">
+                    Klikk på et bilde for å bruke det direkte
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowGalleryPicker(false)}
+                className="p-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 hover:text-white transition-all cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="p-4 sm:p-6 overflow-y-auto flex-1">
+              <MediaGallery
+                mediaLibrary={mediaLibrary}
+                onUpdateMediaLibrary={onUpdateMediaLibrary || (() => {})}
+                isPickerMode={true}
+                selectedImageUrl={value}
+                onSelectImage={(url) => {
+                  onChange(url);
+                  setShowGalleryPicker(false);
+                }}
+              />
+            </div>
+
+            <div className="p-3 bg-stone-100 border-t border-stone-200 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setShowGalleryPicker(false)}
+                className="px-4 py-2 bg-stone-200 hover:bg-stone-300 text-stone-800 font-bold text-xs rounded-xl"
+              >
+                Lukk
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

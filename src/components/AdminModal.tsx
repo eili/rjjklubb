@@ -7,10 +7,12 @@ import {
   TrainingClass, 
   AdminMFAConfig, 
   SiteContent, 
-  CampPhoto 
+  CampPhoto,
+  MediaItem 
 } from '../types';
-import { initialSiteContent } from '../data/initialData';
+import { initialSiteContent, initialMediaLibrary } from '../data/initialData';
 import { ImageInput } from './ImageInput';
+import { MediaGallery } from './MediaGallery';
 import { 
   X, 
   Settings, 
@@ -36,7 +38,8 @@ import {
   Image as ImageIcon,
   Check,
   ChevronDown,
-  Sparkles
+  Sparkles,
+  Compass
 } from 'lucide-react';
 import { generateBase32Secret, generateBackupCodes, getOTPAuthURL } from '../utils/totp';
 
@@ -57,6 +60,8 @@ interface AdminModalProps {
   onLogout: () => void;
   siteContent?: SiteContent;
   onUpdateSiteContent?: (content: SiteContent) => void;
+  mediaLibrary?: MediaItem[];
+  onUpdateMediaLibrary?: (items: MediaItem[]) => void;
 }
 
 export const AdminModal: React.FC<AdminModalProps> = ({
@@ -74,8 +79,10 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   onLogout,
   siteContent = initialSiteContent,
   onUpdateSiteContent,
+  mediaLibrary = initialMediaLibrary,
+  onUpdateMediaLibrary,
 }) => {
-  const [activeTab, setActiveTab] = useState<'innhold' | 'instruktorer' | 'leir' | 'klubb' | 'sikkerhet'>('innhold');
+  const [activeTab, setActiveTab] = useState<'innhold' | 'galleri' | 'instruktorer' | 'leir' | 'klubb' | 'sikkerhet'>('innhold');
   const [contentSubTab, setContentSubTab] = useState<'forside' | 'om-jujutsu' | 'soke-yamaue'>('forside');
   const [saveToast, setSaveToast] = useState(false);
 
@@ -85,6 +92,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   const [tempInstructors, setTempInstructors] = useState<Instructor[]>(instructors);
   const [tempMFA, setTempMFA] = useState<AdminMFAConfig>(mfaConfig);
   const [tempSiteContent, setTempSiteContent] = useState<SiteContent>(siteContent || initialSiteContent);
+  const [tempMediaLibrary, setTempMediaLibrary] = useState<MediaItem[]>(mediaLibrary || initialMediaLibrary);
 
   // Instructor editing state
   const [editingInstId, setEditingInstId] = useState<string | null>(null);
@@ -127,6 +135,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
       setTempCamp(summerCamp);
       setTempInstructors(instructors);
       setTempSiteContent(siteContent || initialSiteContent);
+      setTempMediaLibrary(mediaLibrary || initialMediaLibrary);
       setTempMFA(mfaConfig || {
         isEnabled: true,
         totpSecret: 'JBSWY3DPEHPK3PXP',
@@ -137,7 +146,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
       setEditingInstId(null);
       setEditingInstData(null);
     }
-  }, [isOpen, clubConfig, summerCamp, instructors, mfaConfig, siteContent]);
+  }, [isOpen, clubConfig, summerCamp, instructors, mfaConfig, siteContent, mediaLibrary]);
 
   // QR Code generator effect (MUST be placed before any early returns)
   useEffect(() => {
@@ -192,6 +201,9 @@ export const AdminModal: React.FC<AdminModalProps> = ({
     onUpdateMFAConfig(tempMFA);
     if (onUpdateSiteContent) {
       onUpdateSiteContent(tempSiteContent);
+    }
+    if (onUpdateMediaLibrary) {
+      onUpdateMediaLibrary(tempMediaLibrary);
     }
     triggerSaveToast();
   };
@@ -372,7 +384,19 @@ export const AdminModal: React.FC<AdminModalProps> = ({
             }`}
           >
             <FileText className="w-4 h-4 text-amber-600" />
-            <span>Tekst & Bilder (CMS)</span>
+            <span>Tekst & Sider (CMS)</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('galleri')}
+            className={`px-3.5 py-2.5 rounded-t-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer ${
+              activeTab === 'galleri'
+                ? 'bg-white text-stone-900 border-t-2 border-amber-500 shadow-sm'
+                : 'text-stone-600 hover:text-stone-900'
+            }`}
+          >
+            <Compass className="w-4 h-4 text-amber-500" />
+            <span>Bildegalleri & Unsplash</span>
           </button>
 
           <button
@@ -526,6 +550,8 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                       { name: 'Ju Jitsu kast', url: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=2000&q=80' },
                       { name: 'Tatami matter', url: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=2000&q=80' },
                     ]}
+                    mediaLibrary={tempMediaLibrary}
+                    onUpdateMediaLibrary={setTempMediaLibrary}
                   />
                 </div>
               )}
@@ -638,6 +664,8 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                     })}
                     aspectRatio="portrait"
                     helperText="Last opp eller velg et portrett av Soke Yamaue."
+                    mediaLibrary={tempMediaLibrary}
+                    onUpdateMediaLibrary={setTempMediaLibrary}
                   />
 
                   <div className="space-y-1">
@@ -659,7 +687,20 @@ export const AdminModal: React.FC<AdminModalProps> = ({
             </div>
           )}
 
-          {/* TAB 2: INSTRUKTØRER & BILDER */}
+          {/* TAB: BILDEGALLERI & UNSPASH */}
+          {activeTab === 'galleri' && (
+            <div className="space-y-4">
+              <MediaGallery
+                mediaLibrary={tempMediaLibrary}
+                onUpdateMediaLibrary={(items) => {
+                  setTempMediaLibrary(items);
+                  if (onUpdateMediaLibrary) onUpdateMediaLibrary(items);
+                }}
+              />
+            </div>
+          )}
+
+          {/* TAB 3: INSTRUKTØRER & BILDER */}
           {activeTab === 'instruktorer' && (
             <div className="space-y-6">
               <div className="flex items-center justify-between">
@@ -714,6 +755,8 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                     value={newInst.image || ''}
                     onChange={(url) => setNewInst({ ...newInst, image: url })}
                     aspectRatio="square"
+                    mediaLibrary={tempMediaLibrary}
+                    onUpdateMediaLibrary={setTempMediaLibrary}
                   />
 
                   <textarea
@@ -786,6 +829,8 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                     value={editingInstData.image}
                     onChange={(url) => setEditingInstData({ ...editingInstData, image: url })}
                     aspectRatio="square"
+                    mediaLibrary={tempMediaLibrary}
+                    onUpdateMediaLibrary={setTempMediaLibrary}
                   />
 
                   <div>
@@ -1055,6 +1100,8 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                       value={newPhoto.url || ''}
                       onChange={(url) => setNewPhoto({ ...newPhoto, url })}
                       aspectRatio="video"
+                      mediaLibrary={tempMediaLibrary}
+                      onUpdateMediaLibrary={setTempMediaLibrary}
                     />
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
