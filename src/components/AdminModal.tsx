@@ -39,7 +39,9 @@ import {
   Check,
   ChevronDown,
   Sparkles,
-  Compass
+  Compass,
+  Download,
+  UploadCloud
 } from 'lucide-react';
 import { generateBase32Secret, generateBackupCodes, getOTPAuthURL } from '../utils/totp';
 
@@ -73,6 +75,8 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   onUpdateSummerCamp,
   instructors,
   onUpdateInstructors,
+  classes = [],
+  onUpdateClasses,
   onResetDefaults,
   mfaConfig,
   onUpdateMFAConfig,
@@ -127,6 +131,13 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordToast, setPasswordToast] = useState('');
   const [copiedKey, setCopiedKey] = useState(false);
+
+  // Sync / Export / Import state
+  const [showSyncModal, setShowSyncModal] = useState(false);
+  const [copiedSync, setCopiedSync] = useState(false);
+  const [importJsonInput, setImportJsonInput] = useState('');
+  const [importStatus, setImportStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [importErrorMessage, setImportErrorMessage] = useState('');
 
   // Synchronize local state with props when modal opens or props update
   useEffect(() => {
@@ -227,6 +238,78 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   const handleCancelEditInstructor = () => {
     setEditingInstId(null);
     setEditingInstData(null);
+  };
+
+  // Sync and Export logic
+  const getExportData = () => ({
+    version: '1.0',
+    exportedAt: new Date().toISOString(),
+    clubConfig: tempConfig,
+    siteContent: tempSiteContent,
+    instructors: tempInstructors,
+    summerCamp: tempCamp,
+    classes: classes,
+    mediaLibrary: tempMediaLibrary,
+  });
+
+  const handleCopySyncData = () => {
+    const json = JSON.stringify(getExportData(), null, 2);
+    navigator.clipboard.writeText(json);
+    setCopiedSync(true);
+    setTimeout(() => setCopiedSync(false), 3000);
+  };
+
+  const handleDownloadBackup = () => {
+    const json = JSON.stringify(getExportData(), null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `risor_jujutsu_innhold_${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleApplyImport = () => {
+    setImportErrorMessage('');
+    if (!importJsonInput.trim()) {
+      setImportErrorMessage('Lim inn JSON-data i tekstfeltet først.');
+      setImportStatus('error');
+      return;
+    }
+    try {
+      const data = JSON.parse(importJsonInput);
+      if (data.clubConfig) {
+        setTempConfig(data.clubConfig);
+        onUpdateClubConfig(data.clubConfig);
+      }
+      if (data.siteContent) {
+        setTempSiteContent(data.siteContent);
+        if (onUpdateSiteContent) onUpdateSiteContent(data.siteContent);
+      }
+      if (data.instructors) {
+        setTempInstructors(data.instructors);
+        onUpdateInstructors(data.instructors);
+      }
+      if (data.summerCamp) {
+        setTempCamp(data.summerCamp);
+        onUpdateSummerCamp(data.summerCamp);
+      }
+      if (data.mediaLibrary) {
+        setTempMediaLibrary(data.mediaLibrary);
+        if (onUpdateMediaLibrary) onUpdateMediaLibrary(data.mediaLibrary);
+      }
+      if (data.classes && onUpdateClasses) {
+        onUpdateClasses(data.classes);
+      }
+      setImportStatus('success');
+      triggerSaveToast();
+    } catch {
+      setImportStatus('error');
+      setImportErrorMessage('Kunne ikke lese JSON. Vennligst sjekk at teksten er gyldig JSON.');
+    }
   };
 
   const handleAddInstructor = () => {
@@ -1479,6 +1562,20 @@ export const AdminModal: React.FC<AdminModalProps> = ({
               <span>Tilbakestill standard</span>
             </button>
 
+            <button
+              type="button"
+              onClick={() => {
+                setShowSyncModal(true);
+                setImportStatus('idle');
+                setImportJsonInput('');
+              }}
+              className="px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+              title="Eksporter innhold til AI-editor eller last ned sikkerhetskopi"
+            >
+              <Download className="w-3.5 h-3.5 text-amber-700" />
+              <span>Eksporter / Synk med AI</span>
+            </button>
+
             {saveToast && (
               <span className="text-emerald-700 font-bold text-xs flex items-center gap-1 animate-in fade-in">
                 <CheckCircle2 className="w-4 h-4" />
@@ -1521,6 +1618,124 @@ export const AdminModal: React.FC<AdminModalProps> = ({
             </button>
           </div>
         </div>
+
+        {/* SYNC / EXPORT / IMPORT MODAL */}
+        {showSyncModal && (
+          <div className="fixed inset-0 z-[70] bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-stone-200 space-y-5 animate-in fade-in zoom-in-95 max-h-[90vh] overflow-y-auto">
+              <div className="flex items-center justify-between border-b border-stone-200 pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold">
+                    <Download className="w-5 h-5 text-amber-700" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-stone-900">Synk & Eksporter til AI-editor</h3>
+                    <p className="text-xs text-stone-500">Hvordan få endringer fra GitHub Page tilbake til AI-editoren</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowSyncModal(false)}
+                  className="p-1.5 rounded-full hover:bg-stone-100 text-stone-400 hover:text-stone-700 cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Informative explanation */}
+              <div className="bg-amber-50/70 border border-amber-200 p-4 rounded-2xl text-xs text-stone-700 space-y-2">
+                <p className="font-bold text-amber-900 flex items-center gap-1.5">
+                  <AlertCircle className="w-4 h-4 text-amber-700 shrink-0" />
+                  <span>Slik fungerer synkroniseringen:</span>
+                </p>
+                <p>
+                  GitHub Pages er en <strong>statisk nettside</strong>. Når du gjør endringer i admin-panelet her i nettleseren, lagres de trygt i nettleserens minne (<code className="bg-amber-100/80 px-1 py-0.5 rounded">localStorage</code>), men nettleseren har av sikkerhetsmessige årsaker ikke lov til å skrive direkte tilbake til GitHub-filene dine automatisk.
+                </p>
+                <div className="bg-white p-3 rounded-xl border border-amber-200 space-y-1.5 font-medium text-[11px] text-stone-800">
+                  <p className="font-bold text-stone-900">For å bake endringene permanent inn i kildekoden for alle besøkende:</p>
+                  <ol className="list-decimal list-inside space-y-1 text-stone-600">
+                    <li>Trykk på <strong>«Kopier for AI-editor»</strong> under.</li>
+                    <li>Gå til chatten i AI Studio og skriv: <em className="text-amber-800">«Oppdater kildekoden med dette innholdet»</em> og lim inn.</li>
+                    <li>AI-editoren oppdaterer kildefilene direkte. Neste gang koden pushes til GitHub, vises dine oppdateringer automatisk for alle i hele verden!</li>
+                  </ol>
+                </div>
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  onClick={handleCopySyncData}
+                  className="flex-1 py-2.5 px-4 bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 cursor-pointer shadow transition-all"
+                >
+                  {copiedSync ? (
+                    <>
+                      <Check className="w-4 h-4 text-emerald-400" />
+                      <span className="text-emerald-300">Kopiert til utklippstavle!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-4 h-4 text-amber-400" />
+                      <span>Kopier alt innhold for AI-editor (JSON)</span>
+                    </>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleDownloadBackup}
+                  className="py-2.5 px-4 bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 cursor-pointer border border-stone-300 transition-colors"
+                >
+                  <Download className="w-4 h-4 text-stone-600" />
+                  <span>Last ned .json-fil</span>
+                </button>
+              </div>
+
+              {/* Import / Restore Section */}
+              <div className="pt-4 border-t border-stone-200 space-y-2">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-bold text-stone-800 flex items-center gap-1.5">
+                    <UploadCloud className="w-4 h-4 text-stone-600" />
+                    <span>Gjenopprett eller overfør data fra en annen enhet:</span>
+                  </h4>
+                </div>
+                <textarea
+                  rows={3}
+                  placeholder="Lim inn JSON-data her for å gjenopprette innhold på denne enheten..."
+                  value={importJsonInput}
+                  onChange={(e) => {
+                    setImportJsonInput(e.target.value);
+                    setImportStatus('idle');
+                  }}
+                  className="w-full px-3 py-2 text-xs font-mono rounded-xl border border-stone-300 bg-stone-50 text-stone-900 focus:bg-white focus:border-amber-500"
+                />
+
+                {importStatus === 'error' && (
+                  <p className="text-xs text-red-600 font-semibold">{importErrorMessage}</p>
+                )}
+
+                {importStatus === 'success' && (
+                  <p className="text-xs text-emerald-700 font-bold flex items-center gap-1">
+                    <CheckCircle2 className="w-4 h-4" />
+                    Innholdet ble importert og lagret!
+                  </p>
+                )}
+
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    onClick={handleApplyImport}
+                    disabled={!importJsonInput.trim()}
+                    className="px-4 py-2 bg-stone-800 hover:bg-stone-900 disabled:opacity-40 text-white font-bold text-xs rounded-xl cursor-pointer"
+                  >
+                    Bruk importert data
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        )}
 
       </div>
     </div>
