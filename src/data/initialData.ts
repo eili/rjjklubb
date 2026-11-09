@@ -1,4 +1,4 @@
-import { ClubConfig, Instructor, SummerCampInfo, TrainingClass, VippsProduct, CampPhoto, AdminMFAConfig } from '../types';
+import { ClubConfig, Instructor, SummerCampInfo, TrainingClass, VippsProduct, CampPhoto, AdminMFAConfig, SiteContent } from '../types';
 
 export const initialMFAConfig: AdminMFAConfig = {
   isEnabled: true,
@@ -384,3 +384,33 @@ export const initialVippsProducts: VippsProduct[] = [
     description: 'Støtt Risør Ju Jutsu klubbs tatami-matter, utstyr og barnesatsing.',
   },
 ];
+
+export const initialSiteContent: SiteContent = {
+  hero: {
+    title: 'Mykhet overvinner rå styrke',
+    subtitle: 'Klassisk Japansk Kampsport i Risørhallen',
+    description: 'Velkommen til Risør Ju Jutsu klubb. Opplev den opprinnelige japanske kampsporten som samuraiene utviklet for ubevæpnet kamp. Hos oss lærer du presise leddlåser, kast, frigjøringsteknikker og mental styrke i et trygt og inkluderende fellesskap.',
+    bgImage: 'https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&w=2000&q=80',
+    kittelCardImage: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=800&q=80',
+    kittelQuote: '«Ju Jutsu i Risør bygger trygge, modige og sindige mennesker både på og utenfor tatamien.»',
+  },
+  aboutJuJitsu: {
+    title: 'Hva er Tradisjonell Japansk Ju Jitsu?',
+    subtitle: 'Risør Ju Jutsu • 日本柔術',
+    intro: 'Ju Jitsu er en av verdens eldste og mest helhetlige kampsporter. Direkte oversatt betyr det «den myke kunst» – kunsten å nøytralisere rå, brutal makt gjennom smidighet, biomekanikk og balansebrudd.',
+    historyTitle: 'Fra Samuraienes slagmark til Risørhallen',
+    historyText: 'Ju Jitsu oppsto i føydaltidens Japan under Sengoku-perioden. Samuraiene trengte et effektivt kampsystem dersom sverdet (katana) ble slått ut av hånden mot en pansret fiende. Rå slag og spark var ineffektivt mot rustninger; løsningen ble leddmanipulasjon, balansebrudd, feiinger og kvelninger. I dag viderefører Risør Ju Jutsu klubb disse hevdvunne prinsippene i et moderne, trygt miljø.',
+    image: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=1200&q=80',
+    philosophyQuote: '«Når teknikken er ren og sinnet er i ro, trengs det minimal fysisk kraft for å nøytralisere selv det mest aggressive angrep.»',
+  },
+  sokeYamaue: {
+    title: 'Vår Stilart & Soke Yamaue',
+    subtitle: 'Stilartens Grunnlegger & Hombu Dojo København',
+    intro: 'Risør Ju Jutsu klubb er stolt tilknyttet og veiledet direkte av stormester Soke Yamaue (10. Dan Hanshi), lokalisert i København, Danmark. Her kan du lese om historien, stilartens særpreg og vår ubrutte linje til stormesteren.',
+    bioText1: 'Soke Yamaue har viet over et halvt århundre til tradisjonell japansk Budo. Han er grunnlegger og åndelig overhode for stilarten med hovedsete i sitt Hombu Dojo i København. Hans undervisning kjennetegnes av dyp biomekanisk forståelse, Aiki-prinsipper og overføring av tradisjonell koryu-kunnskap.',
+    bioText2: 'Gjennom sitt tette samarbeid med klubbleder Kittel Gjernes (3. Dan) besøker Soke Yamaue Risørhallen årlig for klubbens sommerleir og internasjonale Dan-graderinger.',
+    image: 'https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&w=800&q=80',
+    quote: '«Det ekte mesterskapet ligger ikke i å beseire andre, men i å beherske seg selv.»',
+  },
+};
+

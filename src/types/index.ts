@@ -117,3 +117,33 @@ export interface AdminMFAConfig {
   adminEmail: string;
   configuredAt?: string;
 }
+
+export interface SiteContent {
+  hero: {
+    title: string;
+    subtitle: string;
+    description: string;
+    bgImage: string;
+    kittelCardImage: string;
+    kittelQuote: string;
+  };
+  aboutJuJitsu: {
+    title: string;
+    subtitle: string;
+    intro: string;
+    historyTitle: string;
+    historyText: string;
+    image: string;
+    philosophyQuote: string;
+  };
+  sokeYamaue: {
+    title: string;
+    subtitle: string;
+    intro: string;
+    bioText1: string;
+    bioText2: string;
+    image: string;
+    quote: string;
+  };
+}
+

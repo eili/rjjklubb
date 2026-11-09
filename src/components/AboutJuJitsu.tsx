@@ -11,14 +11,20 @@ import {
   CheckCircle2,
   ArrowRight
 } from 'lucide-react';
-import { PageTab } from '../types';
+import { PageTab, SiteContent } from '../types';
 
 interface AboutJuJitsuProps {
+  siteContent?: SiteContent;
   onSelectTab: (tab: PageTab) => void;
   onOpenTrial: () => void;
 }
 
-export const AboutJuJitsu: React.FC<AboutJuJitsuProps> = ({ onSelectTab, onOpenTrial }) => {
+export const AboutJuJitsu: React.FC<AboutJuJitsuProps> = ({ 
+  siteContent,
+  onSelectTab, 
+  onOpenTrial 
+}) => {
+  const aboutData = siteContent?.aboutJuJitsu;
   const [activeCategory, setActiveCategory] = useState<'prinsipper' | 'teknikker' | 'historie' | 'forskjell'>('prinsipper');
 
   const techniqueCategories = [
@@ -88,12 +94,16 @@ export const AboutJuJitsu: React.FC<AboutJuJitsuProps> = ({ onSelectTab, onOpenT
             <span>Risør Ju Jutsu • 日本柔術</span>
           </div>
           <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-4">
-            Hva er Tradisjonell Japansk Ju Jitsu?
+            {aboutData?.title || 'Hva er Tradisjonell Japansk Ju Jitsu?'}
           </h1>
           <p className="text-stone-300 text-base sm:text-lg max-w-3xl leading-relaxed">
-            Ju Jitsu er en av verdens eldste og mest helhetlige kampsporter. 
-            Direkte oversatt betyr det <strong className="text-amber-400">«den myke kunst»</strong> – 
-            kunsten å nøytralisere rå, brutal makt gjennom smidighet, biomekanikk og balansebrudd.
+            {aboutData?.intro || (
+              <>
+                Ju Jitsu er en av verdens eldste og mest helhetlige kampsporter. 
+                Direkte oversatt betyr det <strong className="text-amber-400">«den myke kunst»</strong> – 
+                kunsten å nøytralisere rå, brutal makt gjennom smidighet, biomekanikk og balansebrudd.
+              </>
+            )}
           </p>
         </div>
       </section>

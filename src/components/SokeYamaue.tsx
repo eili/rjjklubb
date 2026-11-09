@@ -1,5 +1,5 @@
 import React from 'react';
-import { ClubConfig, PageTab } from '../types';
+import { ClubConfig, PageTab, SiteContent } from '../types';
 import { 
   Sparkles, 
   MapPin, 
@@ -15,15 +15,22 @@ import {
 
 interface SokeYamaueProps {
   clubConfig: ClubConfig;
+  siteContent?: SiteContent;
   onSelectTab: (tab: PageTab) => void;
   onOpenTrial: () => void;
 }
 
 export const SokeYamaue: React.FC<SokeYamaueProps> = ({
   clubConfig,
+  siteContent,
   onSelectTab,
   onOpenTrial,
 }) => {
+  const sokeData = siteContent?.sokeYamaue;
+  const sokeImg = sokeData?.image || 'https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&w=800&q=80';
+  const sokeTitle = sokeData?.title || 'Vår Stilart & Soke Yamaue';
+  const sokeIntro = sokeData?.intro || `${clubConfig.clubName} i Risør er stolt tilknyttet og veiledet direkte av stormester ${clubConfig.sokeName} (Soke er tittelen som stilartsoverhode), lokalisert i ${clubConfig.sokeCity}. Her kan du lese om historien, stilartens særpreg og vår ubrutte linje til stormesteren.`;
+
   return (
     <div className="bg-stone-50 text-stone-900 min-h-screen">
       {/* Header Banner */}
@@ -37,12 +44,10 @@ export const SokeYamaue: React.FC<SokeYamaueProps> = ({
             <span>Stilartens Grunnlegger & Hombu Dojo</span>
           </div>
           <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-4">
-            Vår Stilart & Soke Yamaue
+            {sokeTitle}
           </h1>
           <p className="text-stone-300 text-base sm:text-lg max-w-3xl leading-relaxed">
-            {clubConfig.clubName} i Risør er stolt tilknyttet og veiledet direkte av stormester <strong className="text-amber-400">{clubConfig.sokeName}</strong> (Soke er tittelen som stilartsoverhode), 
-            lokalisert i <strong className="text-stone-100">{clubConfig.sokeCity}</strong>. 
-            Her kan du lese om historien, stilartens særpreg og vår ubrutte linje til stormesteren.
+            {sokeIntro}
           </p>
         </div>
       </section>
@@ -56,7 +61,7 @@ export const SokeYamaue: React.FC<SokeYamaueProps> = ({
             <div className="bg-white rounded-3xl border border-stone-200 overflow-hidden shadow-sm">
               <div className="relative h-80 bg-stone-800">
                 <img
-                  src="https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&w=800&q=80"
+                  src={sokeImg}
                   alt="Soke Yamaue"
                   className="w-full h-full object-cover object-top filter contrast-110"
                 />

@@ -4,14 +4,15 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { PageTab, ClubConfig, Instructor, SummerCampInfo, TrainingClass, VippsProduct, AdminMFAConfig } from './types';
+import { PageTab, ClubConfig, Instructor, SummerCampInfo, TrainingClass, VippsProduct, AdminMFAConfig, SiteContent } from './types';
 import { 
   initialClubConfig, 
   initialInstructors, 
   initialClasses, 
   initialSummerCamp, 
   initialVippsProducts,
-  initialMFAConfig
+  initialMFAConfig,
+  initialSiteContent
 } from './data/initialData';
 
 import { Navbar } from './components/Navbar';
@@ -107,6 +108,15 @@ export default function App() {
       return initialMFAConfig;
     }
   });
+
+  const [siteContent, setSiteContent] = useState<SiteContent>(() => {
+    try {
+      const saved = localStorage.getItem('risor_jujutsu_site_content');
+      return saved ? JSON.parse(saved) : initialSiteContent;
+    } catch {
+      return initialSiteContent;
+    }
+  });
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
 
@@ -136,6 +146,10 @@ export default function App() {
     localStorage.setItem('risor_jujutsu_mfa_config', JSON.stringify(mfaConfig));
   }, [mfaConfig]);
 
+  useEffect(() => {
+    localStorage.setItem('risor_jujutsu_site_content', JSON.stringify(siteContent));
+  }, [siteContent]);
+
   const handleResetDefaults = () => {
     setClubConfig(initialClubConfig);
     setInstructors(initialInstructors);
@@ -143,6 +157,7 @@ export default function App() {
     setClasses(initialClasses);
     setVippsProducts(initialVippsProducts);
     setMfaConfig(initialMFAConfig);
+    setSiteContent(initialSiteContent);
     setIsAdminAuthenticated(false);
     localStorage.removeItem('risor_jujutsu_club_config');
     localStorage.removeItem('risor_jujutsu_instructors');
@@ -150,6 +165,7 @@ export default function App() {
     localStorage.removeItem('risor_jujutsu_classes');
     localStorage.removeItem('risor_jujutsu_vipps_products');
     localStorage.removeItem('risor_jujutsu_mfa_config');
+    localStorage.removeItem('risor_jujutsu_site_content');
   };
 
   const handleOpenVippsCheckout = (product: VippsProduct) => {
@@ -192,6 +208,7 @@ export default function App() {
           <div>
             <HeroSection
               clubConfig={clubConfig}
+              siteContent={siteContent}
               onSelectTab={setCurrentTab}
               onOpenTrial={() => setIsTrialOpen(true)}
             />
@@ -353,6 +370,7 @@ export default function App() {
 
         {currentTab === 'tradisjon' && (
           <AboutJuJitsu
+            siteContent={siteContent}
             onSelectTab={setCurrentTab}
             onOpenTrial={() => setIsTrialOpen(true)}
           />
@@ -361,6 +379,7 @@ export default function App() {
         {currentTab === 'soke-yamaue' && (
           <SokeYamaue
             clubConfig={clubConfig}
+            siteContent={siteContent}
             onSelectTab={setCurrentTab}
             onOpenTrial={() => setIsTrialOpen(true)}
           />
@@ -447,6 +466,8 @@ export default function App() {
         mfaConfig={mfaConfig}
         onUpdateMFAConfig={setMfaConfig}
         onLogout={handleAdminLogout}
+        siteContent={siteContent}
+        onUpdateSiteContent={setSiteContent}
       />
 
       <VippsModal

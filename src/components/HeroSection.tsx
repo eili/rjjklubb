@@ -1,5 +1,5 @@
 import React from 'react';
-import { ClubConfig, PageTab } from '../types';
+import { ClubConfig, PageTab, SiteContent } from '../types';
 import { 
   ChevronRight, 
   ShieldCheck, 
@@ -14,21 +14,28 @@ import {
 
 interface HeroSectionProps {
   clubConfig: ClubConfig;
+  siteContent?: SiteContent;
   onSelectTab: (tab: PageTab) => void;
   onOpenTrial: () => void;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
   clubConfig,
+  siteContent,
   onSelectTab,
   onOpenTrial,
 }) => {
+  const heroData = siteContent?.hero;
+  const bgImg = heroData?.bgImage || 'https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&w=2000&q=80';
+  const heroTitle = heroData?.title || 'Mykhet overvinner rå styrke';
+  const heroDesc = heroData?.description || `Velkommen til ${clubConfig.clubName}. Opplev den opprinnelige japanske kampsporten som samuraiene utviklet for ubevæpnet kamp. Hos oss lærer du presise leddlåser, kast, frigjøringsteknikker og mental styrke i et trygt og inkluderende fellesskap.`;
+
   return (
     <div className="relative overflow-hidden bg-stone-900 text-stone-100">
       {/* Subtle martial arts visual background & gradient textures */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&w=2000&q=80"
+          src={bgImg}
           alt="Ju Jitsu Dojo"
           className="w-full h-full object-cover object-center opacity-25 filter grayscale contrast-125 scale-105 transform motion-safe:transition-transform duration-1000"
         />
@@ -51,16 +58,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           {/* Main Hero Text (Left 7 cols) */}
           <div className="lg:col-span-7 space-y-6">
             <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
-              Mykhet overvinner{' '}
-              <span className="text-amber-400 underline decoration-amber-500/40 decoration-wavy">
-                rå styrke
-              </span>
+              {heroTitle}
             </h1>
 
             <p className="text-lg sm:text-xl text-stone-300 font-light leading-relaxed max-w-2xl">
-              Velkommen til <strong className="text-white font-medium">{clubConfig.clubName}</strong>. 
-              Opplev den opprinnelige japanske kampsporten som samuraiene utviklet for ubevæpnet kamp. 
-              Hos oss lærer du presise leddlåser, kast, frigjøringsteknikker og mental styrke i et trygt og inkluderende fellesskap.
+              {heroDesc}
             </p>
 
             {/* Quick action buttons */}
