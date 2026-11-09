@@ -108,3 +108,12 @@ export interface ClubConfig {
     parkingInfo: string;
   };
 }
+
+export interface AdminMFAConfig {
+  isEnabled: boolean;
+  password: string;
+  totpSecret: string;
+  backupCodes: string[];
+  adminEmail: string;
+  configuredAt?: string;
+}

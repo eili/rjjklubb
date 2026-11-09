@@ -76,11 +76,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="text-stone-700">|</span>
             <button
               onClick={onOpenAdmin}
-              className="text-stone-400 hover:text-stone-200 transition-colors flex items-center gap-1 text-[11px]"
-              title="Klubbadministrasjon (vedlikehold instruktører, leir, info)"
+              className="text-stone-400 hover:text-stone-200 transition-colors flex items-center gap-1.5 text-[11px] cursor-pointer"
+              title="Klubbadministrasjon (sikret med 2-faktor MFA)"
             >
-              <Settings className="w-3.5 h-3.5" />
-              <span>Klubb-admin</span>
+              <ShieldCheck className="w-3.5 h-3.5 text-amber-500" />
+              <span>Admin (2FA)</span>
             </button>
           </div>
         </div>
@@ -237,10 +237,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                   setMobileMenuOpen(false);
                   onOpenAdmin();
                 }}
-                className="py-2.5 px-3 bg-stone-800 text-stone-300 text-xs rounded-xl flex items-center justify-center gap-1 border border-stone-700"
+                className="py-2.5 px-3 bg-stone-800 text-stone-200 text-xs rounded-xl flex items-center justify-center gap-1.5 border border-stone-700 cursor-pointer"
+                title="Klubbadministrasjon (sikret med 2FA)"
               >
-                <Settings className="w-4 h-4" />
-                Admin
+                <ShieldCheck className="w-4 h-4 text-amber-400" />
+                <span>Admin (2FA)</span>
               </button>
             </div>
           </div>

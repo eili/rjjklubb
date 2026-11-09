@@ -1,4 +1,13 @@
-import { ClubConfig, Instructor, SummerCampInfo, TrainingClass, VippsProduct, CampPhoto } from '../types';
+import { ClubConfig, Instructor, SummerCampInfo, TrainingClass, VippsProduct, CampPhoto, AdminMFAConfig } from '../types';
+
+export const initialMFAConfig: AdminMFAConfig = {
+  isEnabled: true,
+  password: 'risorjujutsu2026',
+  totpSecret: 'KITTELRISORJUJUTSU26', // Base32 secret for Risør Ju Jutsu
+  backupCodes: ['4829-1094', '9182-3741', '5523-8841', '6620-1934'],
+  adminEmail: 'kittel@risorjujutsu.no',
+  configuredAt: '2026-01-15T10:00:00.000Z',
+};
 
 export const initialClubConfig: ClubConfig = {
   clubName: 'Risør Ju Jutsu klubb',

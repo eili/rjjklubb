@@ -4,13 +4,14 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { PageTab, ClubConfig, Instructor, SummerCampInfo, TrainingClass, VippsProduct } from './types';
+import { PageTab, ClubConfig, Instructor, SummerCampInfo, TrainingClass, VippsProduct, AdminMFAConfig } from './types';
 import { 
   initialClubConfig, 
   initialInstructors, 
   initialClasses, 
   initialSummerCamp, 
-  initialVippsProducts 
+  initialVippsProducts,
+  initialMFAConfig
 } from './data/initialData';
 
 import { Navbar } from './components/Navbar';
@@ -25,6 +26,7 @@ import { LocationSection } from './components/LocationSection';
 import { InstructorsSection } from './components/InstructorsSection';
 import { ContactSection } from './components/ContactSection';
 import { AdminModal } from './components/AdminModal';
+import { AdminLoginModal } from './components/AdminLoginModal';
 import { VippsModal } from './components/VippsModal';
 import { TrialBookingModal } from './components/TrialBookingModal';
 
@@ -96,6 +98,18 @@ export default function App() {
     }
   });
 
+  // MFA & Auth states
+  const [mfaConfig, setMfaConfig] = useState<AdminMFAConfig>(() => {
+    try {
+      const saved = localStorage.getItem('risor_jujutsu_mfa_config');
+      return saved ? JSON.parse(saved) : initialMFAConfig;
+    } catch {
+      return initialMFAConfig;
+    }
+  });
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+  const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
+
   // Modal states
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isTrialOpen, setIsTrialOpen] = useState(false);
@@ -118,21 +132,47 @@ export default function App() {
     localStorage.setItem('risor_jujutsu_classes', JSON.stringify(classes));
   }, [classes]);
 
+  useEffect(() => {
+    localStorage.setItem('risor_jujutsu_mfa_config', JSON.stringify(mfaConfig));
+  }, [mfaConfig]);
+
   const handleResetDefaults = () => {
     setClubConfig(initialClubConfig);
     setInstructors(initialInstructors);
     setSummerCamp(initialSummerCamp);
     setClasses(initialClasses);
     setVippsProducts(initialVippsProducts);
+    setMfaConfig(initialMFAConfig);
+    setIsAdminAuthenticated(false);
     localStorage.removeItem('risor_jujutsu_club_config');
     localStorage.removeItem('risor_jujutsu_instructors');
     localStorage.removeItem('risor_jujutsu_summer_camp');
     localStorage.removeItem('risor_jujutsu_classes');
     localStorage.removeItem('risor_jujutsu_vipps_products');
+    localStorage.removeItem('risor_jujutsu_mfa_config');
   };
 
   const handleOpenVippsCheckout = (product: VippsProduct) => {
     setActiveVippsProduct(product);
+  };
+
+  // Secure admin opening requiring 2FA MFA
+  const handleOpenAdmin = () => {
+    if (isAdminAuthenticated) {
+      setIsAdminOpen(true);
+    } else {
+      setIsAdminLoginOpen(true);
+    }
+  };
+
+  const handleAdminLoginSuccess = () => {
+    setIsAdminAuthenticated(true);
+    setIsAdminOpen(true);
+  };
+
+  const handleAdminLogout = () => {
+    setIsAdminAuthenticated(false);
+    setIsAdminOpen(false);
   };
 
   return (
@@ -142,7 +182,7 @@ export default function App() {
         currentTab={currentTab}
         onSelectTab={setCurrentTab}
         clubConfig={clubConfig}
-        onOpenAdmin={() => setIsAdminOpen(true)}
+        onOpenAdmin={handleOpenAdmin}
         onOpenTrial={() => setIsTrialOpen(true)}
       />
 
@@ -340,7 +380,7 @@ export default function App() {
           <SummerCampSection
             camp={summerCamp}
             clubConfig={clubConfig}
-            onOpenAdmin={() => setIsAdminOpen(true)}
+            onOpenAdmin={handleOpenAdmin}
             onPayVipps={handleOpenVippsCheckout}
           />
         )}
@@ -367,7 +407,7 @@ export default function App() {
             instructors={instructors}
             clubConfig={clubConfig}
             onUpdateInstructors={setInstructors}
-            onOpenAdmin={() => setIsAdminOpen(true)}
+            onOpenAdmin={handleOpenAdmin}
             onSelectTab={setCurrentTab}
             onOpenTrial={() => setIsTrialOpen(true)}
           />
@@ -383,6 +423,15 @@ export default function App() {
       </main>
 
       {/* Global Modals */}
+      <AdminLoginModal
+        isOpen={isAdminLoginOpen}
+        onClose={() => setIsAdminLoginOpen(false)}
+        onSuccess={handleAdminLoginSuccess}
+        mfaConfig={mfaConfig}
+        clubConfig={clubConfig}
+        onUpdateMFAConfig={setMfaConfig}
+      />
+
       <AdminModal
         isOpen={isAdminOpen}
         onClose={() => setIsAdminOpen(false)}
@@ -395,6 +444,9 @@ export default function App() {
         classes={classes}
         onUpdateClasses={setClasses}
         onResetDefaults={handleResetDefaults}
+        mfaConfig={mfaConfig}
+        onUpdateMFAConfig={setMfaConfig}
+        onLogout={handleAdminLogout}
       />
 
       <VippsModal
@@ -414,7 +466,7 @@ export default function App() {
       <Footer
         clubConfig={clubConfig}
         onSelectTab={setCurrentTab}
-        onOpenAdmin={() => setIsAdminOpen(true)}
+        onOpenAdmin={handleOpenAdmin}
       />
     </div>
   );

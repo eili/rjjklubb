@@ -171,9 +171,11 @@ export const Footer: React.FC<FooterProps> = ({ clubConfig, onSelectTab, onOpenA
           <div className="flex items-center gap-4">
             <button
               onClick={onOpenAdmin}
-              className="text-stone-500 hover:text-stone-300 transition-colors"
+              className="text-stone-500 hover:text-amber-400 transition-colors flex items-center gap-1 cursor-pointer"
+              title="Klubbadministrasjon (sikret med 2FA)"
             >
-              Administrasjon
+              <Shield className="w-3.5 h-3.5 text-amber-500" />
+              <span>Administrasjon (2FA)</span>
             </button>
             <span>•</span>
             <span className="flex items-center gap-1 text-stone-500">
