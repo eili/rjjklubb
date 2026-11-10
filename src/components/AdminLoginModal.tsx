@@ -122,7 +122,8 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
     e.preventDefault();
     setErrorMsg('');
 
-    if (password === mfaConfig.password || password === 'risorjujutsu2026') {
+    const validPassword = mfaConfig?.password || 'risorjujutsu2026';
+    if (password === validPassword) {
       // Password correct, proceed to MFA
       setStep('mfa');
     } else {
@@ -282,15 +283,9 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
                 </div>
               </div>
 
-              {/* Helper tip */}
-              <div className="p-3 bg-stone-50 border border-stone-200 rounded-xl text-[11px] text-stone-600 space-y-1">
-                <span className="font-bold text-stone-800 block">Standard passord:</span>
-                <span className="font-mono text-amber-700 font-bold bg-amber-50 px-2 py-0.5 rounded border border-amber-200 inline-block">
-                  risorjujutsu2026
-                </span>
-                <p className="text-stone-500 text-[10px] pt-1">
-                  (Du kan endre dette passordet når du er innlogget).
-                </p>
+              <div className="p-3 bg-stone-50 border border-stone-200 rounded-xl text-[11px] text-stone-500 flex items-start gap-2">
+                <ShieldCheck className="w-4 h-4 text-stone-400 shrink-0 mt-0.5" />
+                <span>Kun for autoriserte klubbledere i Risør Ju Jutsu klubb. Innlogging krever både personlig passord og 2-faktor (MFA).</span>
               </div>
 
               <div className="pt-2 space-y-2">
@@ -361,21 +356,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
                 </div>
               </div>
 
-              {/* Demo test helper */}
-              <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200 text-xs flex items-center justify-between">
-                <div>
-                  <span className="font-bold text-amber-900 block text-[11px]">Rask test / Demo:</span>
-                  <span className="text-[10px] text-stone-600">Klikk for å hente koden automatisk</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleDemoAutofill}
-                  className="px-2.5 py-1 text-xs bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold rounded-lg transition-colors cursor-pointer flex items-center gap-1"
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Fyll aktiv kode</span>
-                </button>
-              </div>
+
 
               {/* Action Buttons */}
               <div className="pt-2 space-y-2">
@@ -587,22 +568,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
                 )}
               </div>
 
-              {/* Show active backup codes hint */}
-              <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-[11px] text-stone-600">
-                <span className="font-bold text-amber-900 block">Klubbens aktive reservekoder:</span>
-                <div className="grid grid-cols-2 gap-1 font-mono text-xs text-stone-800 pt-1">
-                  {(mfaConfig?.backupCodes || ['4829-1094', '9912-3841', '7521-6643', '2019-8472']).map((code, idx) => (
-                    <span
-                      key={idx}
-                      onClick={() => setBackupCodeInput(code)}
-                      className="cursor-pointer hover:text-amber-700 bg-white px-2 py-0.5 rounded border border-amber-200 inline-block text-center"
-                      title="Klikk for å sette inn"
-                    >
-                      {code}
-                    </span>
-                  ))}
-                </div>
-              </div>
+
 
               <div className="pt-2">
                 <button
