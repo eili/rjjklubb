@@ -56,6 +56,19 @@ service cloud.firestore {
         && data.mediaLibrary is list;
     }
 
+    // Validation for Closed Member Registry
+    function isValidMember(data) {
+      return data.keys().hasAll(['name', 'birthDate', 'phone', 'email', 'rank', 'semester', 'hasPaidFee', 'status'])
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 120
+        && data.birthDate is string && data.birthDate.size() <= 40
+        && data.phone is string && data.phone.size() <= 50
+        && data.email is string && data.email.size() <= 120
+        && data.rank is string && data.rank.size() <= 80
+        && data.semester is string && data.semester.size() <= 80
+        && data.hasPaidFee is bool
+        && data.status in ['aktiv', 'inaktiv', 'pause'];
+    }
+
     // 1. Club Data: Public can read. Create and update validated against structural schema.
     match /clubData/{documentId} {
       allow read: if isValidId(documentId);
@@ -69,7 +82,13 @@ service cloud.firestore {
       allow read, update, delete: if isValidId(bookingId) && isAdmin();
     }
 
-    // 3. Admin registry
+    // 3. Closed Member Registry for Admin
+    match /members/{memberId} {
+      allow read, delete: if isValidId(memberId);
+      allow create, update: if isValidId(memberId) && isValidMember(incoming());
+    }
+
+    // 4. Admin registry
     match /admins/{adminId} {
       allow read: if isSignedIn();
       allow write: if isBootstrappedAdmin() && isValidId(adminId);

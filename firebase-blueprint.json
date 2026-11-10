@@ -80,6 +80,63 @@
         }
       },
       "required": ["name", "email", "phone", "ageGroup", "createdAt", "status"]
+    },
+    "Member": {
+      "title": "Member",
+      "description": "Closed member record for admin registry with semester and fee payment tracking",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Full name of the club member"
+        },
+        "birthDate": {
+          "type": "string",
+          "description": "Date of birth (YYYY-MM-DD or DD.MM.YYYY)"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Mobile telephone number"
+        },
+        "email": {
+          "type": "string",
+          "description": "Contact email address"
+        },
+        "rank": {
+          "type": "string",
+          "description": "Belt grading rank"
+        },
+        "semester": {
+          "type": "string",
+          "description": "Semester period (e.g. Høst 2026, Vår 2027)"
+        },
+        "hasPaidFee": {
+          "type": "boolean",
+          "description": "Whether membership fee is paid for the semester"
+        },
+        "paidDate": {
+          "type": "string",
+          "description": "Date when fee was registered paid"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Optional notes regarding guardians, gear, or injuries"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["aktiv", "inaktiv", "pause"],
+          "description": "Membership status"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Record creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Record last update timestamp"
+        }
+      },
+      "required": ["name", "birthDate", "phone", "email", "rank", "semester", "hasPaidFee", "status"]
     }
   },
   "firestore": {
@@ -94,6 +151,12 @@
         "$ref": "#/entities/TrialBooking"
       },
       "description": "Inquiries and bookings for trial training"
+    },
+    "/members/{memberId}": {
+      "schema": {
+        "$ref": "#/entities/Member"
+      },
+      "description": "Closed private member registry for admin with semester archiving"
     }
   }
 }

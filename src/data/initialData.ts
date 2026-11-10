@@ -1,4 +1,4 @@
-import { ClubConfig, Instructor, SummerCampInfo, TrainingClass, VippsProduct, CampPhoto, AdminMFAConfig, SiteContent, MediaItem } from '../types';
+import { ClubConfig, Instructor, SummerCampInfo, TrainingClass, VippsProduct, CampPhoto, AdminMFAConfig, SiteContent, MediaItem, Member } from '../types';
 
 export const initialMFAConfig: AdminMFAConfig = {
   isEnabled: true,
@@ -583,10 +583,118 @@ export const curatedUnsplashCatalog: UnsplashPreset[] = [
     id: 'un-10',
     title: 'Kampsport Sensei Trener',
     url: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1600&q=80',
-    photographer: 'Mitchell Griest',
+    photographer: 'Sensei Training',
     category: 'instruktor',
     tags: ['sensei', 'trener', 'hovedinstruktør', 'veileder'],
   },
 ];
+
+export const STANDARD_RANKS = [
+  'Hvitt belte (6. Kyu)',
+  'Gult belte (5. Kyu)',
+  'Oransje belte (4. Kyu)',
+  'Grønt belte (3. Kyu)',
+  'Blått belte (2. Kyu)',
+  'Brunt belte (1. Kyu)',
+  '1. Dan Sort belte (Shodan)',
+  '2. Dan Sort belte (Nidan)',
+  '3. Dan Sort belte (Sandan)',
+  '4. dan Sort belte (Yondan)',
+];
+
+export const DEFAULT_SEMESTERS = [
+  'Høst 2026',
+  'Vår 2027',
+  'Høst 2027',
+  'Vår 2028',
+  'Vår 2026 (Tidligere)',
+  'Høst 2025 (Tidligere)',
+];
+
+export const initialMembers: Member[] = [
+  {
+    id: 'm-1',
+    name: 'Alexander Lind',
+    birthDate: '2001-08-14',
+    phone: '913 45 678',
+    email: 'alexander.lind@example.no',
+    rank: 'Gult belte (5. Kyu)',
+    semester: 'Høst 2026',
+    hasPaidFee: true,
+    paidDate: '2026-08-25',
+    notes: 'Aktiv på voksne nybegynnere. Har kjøpt klubbdrakt.',
+    status: 'aktiv',
+    createdAt: '2026-08-15T12:00:00.000Z',
+  },
+  {
+    id: 'm-2',
+    name: 'Sofie Berg',
+    birthDate: '1998-11-22',
+    phone: '481 23 456',
+    email: 'sofie.berg@example.no',
+    rank: 'Grønt belte (3. Kyu)',
+    semester: 'Høst 2026',
+    hasPaidFee: false,
+    notes: 'Avtalt betaling via Vipps i neste uke.',
+    status: 'aktiv',
+    createdAt: '2026-08-18T10:30:00.000Z',
+  },
+  {
+    id: 'm-3',
+    name: 'Jonas Tveit',
+    birthDate: '2008-03-05',
+    phone: '975 66 123',
+    email: 'foreldre.tveit@example.no',
+    rank: 'Hvitt belte (6. Kyu)',
+    semester: 'Høst 2026',
+    hasPaidFee: true,
+    paidDate: '2026-08-20',
+    notes: 'Ungdomsparti. Foresatte: Kristin Tveit (tlf 975 66 124).',
+    status: 'aktiv',
+    createdAt: '2026-08-19T14:15:00.000Z',
+  },
+  {
+    id: 'm-4',
+    name: 'Elin Sandvik',
+    birthDate: '1993-07-19',
+    phone: '902 33 889',
+    email: 'elin.sandvik@example.no',
+    rank: 'Blått belte (2. Kyu)',
+    semester: 'Vår 2026 (Tidligere)',
+    hasPaidFee: true,
+    paidDate: '2026-01-20',
+    notes: 'Gradert til blått belte mai 2026.',
+    status: 'aktiv',
+    createdAt: '2026-01-10T09:00:00.000Z',
+  },
+  {
+    id: 'm-5',
+    name: 'Mathias Olsen',
+    birthDate: '2003-12-04',
+    phone: '412 88 990',
+    email: 'mathias.olsen@example.no',
+    rank: 'Oransje belte (4. Kyu)',
+    semester: 'Høst 2026',
+    hasPaidFee: true,
+    paidDate: '2026-08-29',
+    notes: 'Deltar også på sommerleiren.',
+    status: 'aktiv',
+    createdAt: '2026-08-22T16:00:00.000Z',
+  },
+  {
+    id: 'm-6',
+    name: 'Henrik Vang',
+    birthDate: '1989-02-17',
+    phone: '934 11 223',
+    email: 'henrik.vang@example.no',
+    rank: 'Brunt belte (1. Kyu)',
+    semester: 'Høst 2026',
+    hasPaidFee: false,
+    notes: 'Trener mot 1. Dan Shodan gradering.',
+    status: 'aktiv',
+    createdAt: '2026-08-10T11:00:00.000Z',
+  },
+];
+
 
 

@@ -8,11 +8,13 @@ import {
   AdminMFAConfig, 
   SiteContent, 
   CampPhoto,
-  MediaItem 
+  MediaItem,
+  Member
 } from '../types';
 import { initialSiteContent, initialMediaLibrary } from '../data/initialData';
 import { ImageInput } from './ImageInput';
 import { MediaGallery } from './MediaGallery';
+import { MemberList } from './MemberList';
 import { saveClubDataToFirestore, fetchCurrentCloudData, FullClubData } from '../lib/firebase';
 import { 
   X, 
@@ -44,7 +46,8 @@ import {
   Download,
   UploadCloud,
   Database,
-  ExternalLink
+  ExternalLink,
+  UserCheck
 } from 'lucide-react';
 import { generateBase32Secret, generateBackupCodes, getOTPAuthURL } from '../utils/totp';
 
@@ -67,6 +70,11 @@ interface AdminModalProps {
   onUpdateSiteContent?: (content: SiteContent) => void;
   mediaLibrary?: MediaItem[];
   onUpdateMediaLibrary?: (items: MediaItem[]) => void;
+  members?: Member[];
+  onAddMember?: (member: Member) => void;
+  onUpdateMember?: (member: Member) => void;
+  onDeleteMember?: (id: string) => void;
+  onToggleFee?: (member: Member) => void;
 }
 
 export const AdminModal: React.FC<AdminModalProps> = ({
@@ -88,8 +96,13 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   onUpdateSiteContent,
   mediaLibrary = initialMediaLibrary,
   onUpdateMediaLibrary,
+  members = [],
+  onAddMember,
+  onUpdateMember,
+  onDeleteMember,
+  onToggleFee,
 }) => {
-  const [activeTab, setActiveTab] = useState<'innhold' | 'galleri' | 'instruktorer' | 'leir' | 'klubb' | 'database' | 'sikkerhet'>('innhold');
+  const [activeTab, setActiveTab] = useState<'innhold' | 'galleri' | 'medlemmer' | 'instruktorer' | 'leir' | 'klubb' | 'database' | 'sikkerhet'>('innhold');
   const [contentSubTab, setContentSubTab] = useState<'forside' | 'om-jujutsu' | 'soke-yamaue'>('forside');
   const [saveToast, setSaveToast] = useState(false);
 
@@ -568,6 +581,19 @@ export const AdminModal: React.FC<AdminModalProps> = ({
           </button>
 
           <button
+            onClick={() => setActiveTab('medlemmer')}
+            className={`px-3 py-2 rounded-t-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shrink-0 ${
+              activeTab === 'medlemmer'
+                ? 'bg-white text-stone-900 border-t-2 border-amber-500 shadow-sm font-extrabold'
+                : 'text-stone-700 hover:text-stone-900 bg-stone-200/60'
+            }`}
+          >
+            <UserCheck className="w-3.5 h-3.5 text-amber-600" />
+            <span>Medlemsliste ({members?.length || 0})</span>
+            <span className="text-[9px] bg-stone-900 text-amber-400 font-bold px-1.5 py-0.5 rounded-full ml-0.5">LUKKET</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('instruktorer')}
             className={`px-3 py-2 rounded-t-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer shrink-0 ${
               activeTab === 'instruktorer'
@@ -883,6 +909,17 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                 }}
               />
             </div>
+          )}
+
+          {/* TAB: LUKKET MEDLEMSLISTE */}
+          {activeTab === 'medlemmer' && (
+            <MemberList
+              members={members || []}
+              onAddMember={onAddMember || (() => {})}
+              onUpdateMember={onUpdateMember || (() => {})}
+              onDeleteMember={onDeleteMember || (() => {})}
+              onToggleFee={onToggleFee || (() => {})}
+            />
           )}
 
           {/* TAB 3: INSTRUKTØRER & BILDER */}

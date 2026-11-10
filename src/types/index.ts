@@ -158,4 +158,20 @@ export interface MediaItem {
   description?: string;
 }
 
+export interface Member {
+  id: string;
+  name: string;
+  birthDate: string; // f.eks. "14.08.2001" eller "2001-08-14"
+  phone: string;     // f.eks. "920 14 550"
+  email: string;     // f.eks. "utover@eksempel.no"
+  rank: string;      // f.eks. "Hvitt belte", "Gult 5. kyu", "Oransje 4. kyu", "1. Dan"
+  semester: string;  // f.eks. "Høst 2026", "Vår 2027"
+  hasPaidFee: boolean; // Huke av for betalt medlemsavgift
+  paidDate?: string;
+  notes?: string;
+  status: 'aktiv' | 'inaktiv' | 'pause';
+  createdAt: string;
+  updatedAt?: string;
+}
+
 

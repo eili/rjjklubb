@@ -6,7 +6,8 @@ import {
   onSnapshot, 
   getDocFromServer,
   collection,
-  addDoc
+  addDoc,
+  deleteDoc
 } from 'firebase/firestore';
 import { getAuth, signInAnonymously } from 'firebase/auth';
 import firebaseConfig from '../../firebase-applet-config.json';
@@ -16,7 +17,8 @@ import {
   Instructor, 
   SummerCampInfo, 
   TrainingClass, 
-  MediaItem 
+  MediaItem,
+  Member 
 } from '../types';
 
 export const app = initializeApp(firebaseConfig);
@@ -192,3 +194,54 @@ export async function submitTrialBookingToFirestore(booking: {
     return false;
   }
 }
+
+// Subscribe to closed member registry
+export function subscribeToMembers(
+  onData: (members: Member[]) => void,
+  onError?: (err: any) => void
+) {
+  const colRef = collection(db, 'members');
+  return onSnapshot(
+    colRef,
+    (snap) => {
+      const members: Member[] = [];
+      snap.forEach((d) => {
+        members.push({ id: d.id, ...d.data() } as Member);
+      });
+      onData(members);
+    },
+    (error) => {
+      handleFirestoreError(error, OperationType.LIST, 'members');
+      if (onError) onError(error);
+    }
+  );
+}
+
+// Save or update an individual member
+export async function saveMemberToFirestore(member: Member): Promise<boolean> {
+  const path = `members/${member.id}`;
+  try {
+    const docRef = doc(db, 'members', member.id);
+    await setDoc(docRef, {
+      ...member,
+      updatedAt: new Date().toISOString(),
+    }, { merge: true });
+    return true;
+  } catch (error) {
+    handleFirestoreError(error, OperationType.WRITE, path);
+    return false;
+  }
+}
+
+// Delete a member from Firestore
+export async function deleteMemberFromFirestore(memberId: string): Promise<boolean> {
+  const path = `members/${memberId}`;
+  try {
+    await deleteDoc(doc(db, 'members', memberId));
+    return true;
+  } catch (error) {
+    handleFirestoreError(error, OperationType.DELETE, path);
+    return false;
+  }
+}
+
