@@ -516,10 +516,18 @@ export const AdminModal: React.FC<AdminModalProps> = ({
           </div>
 
           <div className="flex items-center gap-2.5">
-            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-[10px] text-emerald-300 font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>Firebase Sky: Tilkoblet</span>
-            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setActiveTab('database');
+                handleFetchCloudData();
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-950 hover:bg-emerald-900 border border-emerald-500/60 text-[11px] text-emerald-300 font-semibold cursor-pointer shadow transition-all hover:scale-105 active:scale-95"
+              title="Klikk her for å se database-innholdet i Firebase"
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Firebase Sky: Tilkoblet (Klikk for å se database)</span>
+            </button>
 
             <button
               type="button"
@@ -534,91 +542,93 @@ export const AdminModal: React.FC<AdminModalProps> = ({
         </div>
 
         {/* Tab Navigation */}
-        <div className="bg-stone-100 border-b border-stone-200 px-4 sm:px-6 pt-2 flex flex-wrap gap-1.5 shrink-0">
+        <div className="bg-stone-100 border-b border-stone-200 px-3 sm:px-6 pt-2 flex items-center gap-1.5 shrink-0 overflow-x-auto scrollbar-thin">
           <button
             onClick={() => setActiveTab('innhold')}
-            className={`px-3.5 py-2.5 rounded-t-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 py-2 rounded-t-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer shrink-0 ${
               activeTab === 'innhold'
                 ? 'bg-white text-stone-900 border-t-2 border-amber-500 shadow-sm'
                 : 'text-stone-600 hover:text-stone-900'
             }`}
           >
-            <FileText className="w-4 h-4 text-amber-600" />
-            <span>Tekst & Sider (CMS)</span>
+            <FileText className="w-3.5 h-3.5 text-amber-600" />
+            <span>Tekst (CMS)</span>
           </button>
 
           <button
             onClick={() => setActiveTab('galleri')}
-            className={`px-3.5 py-2.5 rounded-t-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 py-2 rounded-t-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer shrink-0 ${
               activeTab === 'galleri'
                 ? 'bg-white text-stone-900 border-t-2 border-amber-500 shadow-sm'
                 : 'text-stone-600 hover:text-stone-900'
             }`}
           >
-            <Compass className="w-4 h-4 text-amber-500" />
-            <span>Bildegalleri & Unsplash</span>
+            <Compass className="w-3.5 h-3.5 text-amber-500" />
+            <span>Galleri</span>
           </button>
 
           <button
             onClick={() => setActiveTab('instruktorer')}
-            className={`px-3.5 py-2.5 rounded-t-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 py-2 rounded-t-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer shrink-0 ${
               activeTab === 'instruktorer'
                 ? 'bg-white text-stone-900 border-t-2 border-amber-500 shadow-sm'
                 : 'text-stone-600 hover:text-stone-900'
             }`}
           >
-            <Users className="w-4 h-4 text-amber-500" />
-            <span>Instruktører & Bilder ({tempInstructors.length})</span>
+            <Users className="w-3.5 h-3.5 text-amber-500" />
+            <span>Instruktører ({tempInstructors.length})</span>
           </button>
 
           <button
             onClick={() => setActiveTab('leir')}
-            className={`px-3.5 py-2.5 rounded-t-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 py-2 rounded-t-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer shrink-0 ${
               activeTab === 'leir'
                 ? 'bg-white text-stone-900 border-t-2 border-amber-500 shadow-sm'
                 : 'text-stone-600 hover:text-stone-900'
             }`}
           >
-            <Sun className="w-4 h-4 text-amber-500" />
-            <span>Sommerleir & Galleri</span>
+            <Sun className="w-3.5 h-3.5 text-amber-500" />
+            <span>Sommerleir</span>
           </button>
 
           <button
             onClick={() => setActiveTab('klubb')}
-            className={`px-3.5 py-2.5 rounded-t-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 py-2 rounded-t-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer shrink-0 ${
               activeTab === 'klubb'
                 ? 'bg-white text-stone-900 border-t-2 border-amber-500 shadow-sm'
                 : 'text-stone-600 hover:text-stone-900'
             }`}
           >
-            <QrCode className="w-4 h-4 text-[#ff5b24]" />
-            <span>Vipps & Klubbinfo</span>
+            <QrCode className="w-3.5 h-3.5 text-[#ff5b24]" />
+            <span>Vipps & Klubb</span>
           </button>
 
+          {/* Dedicated Eye-Catching Cloud Data Tab */}
           <button
             onClick={() => {
               setActiveTab('database');
               handleFetchCloudData();
             }}
-            className={`px-3.5 py-2.5 rounded-t-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3.5 py-2 rounded-t-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shrink-0 shadow-xs ${
               activeTab === 'database'
-                ? 'bg-white text-stone-900 border-t-2 border-emerald-500 shadow-sm'
-                : 'text-stone-600 hover:text-stone-900'
+                ? 'bg-emerald-50 text-emerald-950 border-t-2 border-emerald-600 shadow-sm'
+                : 'bg-emerald-100/70 text-emerald-900 hover:bg-emerald-200 border border-emerald-300'
             }`}
           >
-            <Database className="w-4 h-4 text-emerald-600" />
-            <span>Skydata & Firebase</span>
+            <Database className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+            <span className="font-extrabold text-emerald-900">Skydata & Firebase</span>
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
           </button>
 
           <button
             onClick={() => setActiveTab('sikkerhet')}
-            className={`px-3.5 py-2.5 rounded-t-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 py-2 rounded-t-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer shrink-0 ${
               activeTab === 'sikkerhet'
                 ? 'bg-white text-stone-900 border-t-2 border-amber-500 shadow-sm'
                 : 'text-stone-600 hover:text-stone-900'
             }`}
           >
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
             <span>Sikkerhet & MFA</span>
           </button>
         </div>
@@ -1855,6 +1865,19 @@ export const AdminModal: React.FC<AdminModalProps> = ({
             >
               <Download className="w-3.5 h-3.5 text-amber-700" />
               <span>Eksporter / Synk med AI</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setActiveTab('database');
+                handleFetchCloudData();
+              }}
+              className="px-3 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+              title="Åpne databasedetaljer for Firebase"
+            >
+              <Database className="w-3.5 h-3.5 text-emerald-700" />
+              <span>Se Database (Skydata)</span>
             </button>
 
             {saveToast && (
