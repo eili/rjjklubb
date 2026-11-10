@@ -13,6 +13,7 @@ import {
 import { initialSiteContent, initialMediaLibrary } from '../data/initialData';
 import { ImageInput } from './ImageInput';
 import { MediaGallery } from './MediaGallery';
+import { saveClubDataToFirestore } from '../lib/firebase';
 import { 
   X, 
   Settings, 
@@ -216,6 +217,15 @@ export const AdminModal: React.FC<AdminModalProps> = ({
     if (onUpdateMediaLibrary) {
       onUpdateMediaLibrary(tempMediaLibrary);
     }
+    // Also save directly to Firebase Firestore
+    saveClubDataToFirestore({
+      clubConfig: tempConfig,
+      siteContent: tempSiteContent,
+      instructors: tempInstructors,
+      summerCamp: tempCamp,
+      classes: classes,
+      mediaLibrary: tempMediaLibrary,
+    });
     triggerSaveToast();
   };
 
@@ -230,6 +240,14 @@ export const AdminModal: React.FC<AdminModalProps> = ({
     const updated = tempInstructors.map((i) => (i.id === editingInstData.id ? editingInstData : i));
     setTempInstructors(updated);
     onUpdateInstructors(updated);
+    saveClubDataToFirestore({
+      clubConfig: tempConfig,
+      siteContent: tempSiteContent,
+      instructors: updated,
+      summerCamp: tempCamp,
+      classes: classes,
+      mediaLibrary: tempMediaLibrary,
+    });
     setEditingInstId(null);
     setEditingInstData(null);
     triggerSaveToast();
@@ -445,15 +463,22 @@ export const AdminModal: React.FC<AdminModalProps> = ({
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={onClose}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 hover:text-white transition-all border border-stone-700 text-xs font-semibold cursor-pointer shadow-sm active:scale-95"
-            aria-label="Lukk administrasjonsvindu"
-          >
-            <span>Lukk</span>
-            <X className="w-4 h-4 text-stone-300" />
-          </button>
+          <div className="flex items-center gap-2.5">
+            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-[10px] text-emerald-300 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Firebase Sky: Tilkoblet</span>
+            </div>
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 hover:text-white transition-all border border-stone-700 text-xs font-semibold cursor-pointer shadow-sm active:scale-95"
+              aria-label="Lukk administrasjonsvindu"
+            >
+              <span>Lukk</span>
+              <X className="w-4 h-4 text-stone-300" />
+            </button>
+          </div>
         </div>
 
         {/* Tab Navigation */}

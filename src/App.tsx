@@ -31,6 +31,11 @@ import { AdminModal } from './components/AdminModal';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { VippsModal } from './components/VippsModal';
 import { TrialBookingModal } from './components/TrialBookingModal';
+import { 
+  testConnection, 
+  subscribeToClubData, 
+  saveClubDataToFirestore 
+} from './lib/firebase';
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState<PageTab>('hjem');
@@ -135,6 +140,22 @@ export default function App() {
   const [isTrialOpen, setIsTrialOpen] = useState(false);
   const [activeVippsProduct, setActiveVippsProduct] = useState<VippsProduct | null>(null);
 
+  // Real-time Firestore sync & connectivity test on initial boot
+  useEffect(() => {
+    testConnection();
+
+    const unsubscribe = subscribeToClubData((cloudData) => {
+      if (cloudData.clubConfig) setClubConfig(cloudData.clubConfig);
+      if (cloudData.siteContent) setSiteContent(cloudData.siteContent);
+      if (cloudData.instructors) setInstructors(cloudData.instructors);
+      if (cloudData.summerCamp) setSummerCamp(cloudData.summerCamp);
+      if (cloudData.classes) setClasses(cloudData.classes);
+      if (cloudData.mediaLibrary) setMediaLibrary(cloudData.mediaLibrary);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   // Sync to local storage
   useEffect(() => {
     localStorage.setItem('risor_jujutsu_club_config', JSON.stringify(clubConfig));
@@ -182,6 +203,14 @@ export default function App() {
     localStorage.removeItem('risor_jujutsu_mfa_config');
     localStorage.removeItem('risor_jujutsu_site_content');
     localStorage.removeItem('risor_jujutsu_media_library');
+    saveClubDataToFirestore({
+      clubConfig: initialClubConfig,
+      siteContent: initialSiteContent,
+      instructors: initialInstructors,
+      summerCamp: initialSummerCamp,
+      classes: initialClasses,
+      mediaLibrary: initialMediaLibrary,
+    });
   };
 
   const handleOpenVippsCheckout = (product: VippsProduct) => {

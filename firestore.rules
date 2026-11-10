@@ -1,0 +1,78 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global safety net - deny all by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Security helper primitives
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isBootstrappedAdmin() {
+      return isSignedIn() && request.auth.token.email == 'eivind1966@gmail.com';
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        isBootstrappedAdmin() || 
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    // Validation for Trial Bookings
+    function isValidTrialBooking(data) {
+      return data.keys().hasAll(['name', 'email', 'phone', 'ageGroup', 'createdAt', 'status'])
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 120
+        && data.email is string && data.email.size() > 0 && data.email.size() <= 120
+        && data.phone is string && data.phone.size() > 0 && data.phone.size() <= 50
+        && data.ageGroup is string && data.ageGroup.size() <= 50
+        && data.status in ['pending', 'confirmed', 'completed'];
+    }
+
+    // Validation for Club Data
+    function isValidClubData(data) {
+      return data.keys().hasAll(['clubConfig', 'siteContent', 'instructors', 'summerCamp', 'classes', 'mediaLibrary'])
+        && data.clubConfig is map
+        && data.siteContent is map
+        && data.instructors is list
+        && data.summerCamp is map
+        && data.classes is list
+        && data.mediaLibrary is list;
+    }
+
+    // 1. Club Data: Public can read, authenticated admin can write
+    match /clubData/{documentId} {
+      allow read: if isValidId(documentId);
+      allow create, update: if isValidId(documentId) && isSignedIn() && isValidClubData(incoming());
+      allow delete: if isValidId(documentId) && isAdmin();
+    }
+
+    // 2. Trial Bookings: Any visitor can create a booking request, only admin can view/manage
+    match /trialBookings/{bookingId} {
+      allow create: if isValidId(bookingId) && isValidTrialBooking(incoming());
+      allow read, update, delete: if isValidId(bookingId) && isAdmin();
+    }
+
+    // 3. Admin registry
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if isBootstrappedAdmin() && isValidId(adminId);
+    }
+  }
+}

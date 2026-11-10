@@ -1,0 +1,99 @@
+{
+  "entities": {
+    "ClubData": {
+      "title": "ClubData",
+      "description": "Public content and configuration for Risør Ju Jutsu klubb",
+      "type": "object",
+      "properties": {
+        "clubConfig": {
+          "type": "object",
+          "description": "Club name, leader, location, contact, vipps number and prices"
+        },
+        "siteContent": {
+          "type": "object",
+          "description": "CMS text content for hero, history, and Soke Yamaue section"
+        },
+        "instructors": {
+          "type": "array",
+          "description": "List of instructors and masters"
+        },
+        "summerCamp": {
+          "type": "object",
+          "description": "Summer camp information, schedule, dates and photos"
+        },
+        "classes": {
+          "type": "array",
+          "description": "Weekly training schedule and age groups"
+        },
+        "mediaLibrary": {
+          "type": "array",
+          "description": "Media gallery assets and Unsplash connected photos"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last update"
+        },
+        "updatedBy": {
+          "type": "string",
+          "description": "User identifier who performed the update"
+        }
+      },
+      "required": ["clubConfig", "siteContent", "instructors", "summerCamp", "classes", "mediaLibrary"]
+    },
+    "TrialBooking": {
+      "title": "TrialBooking",
+      "description": "Trial training session booking submitted by a visitor",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Full name of the participant"
+        },
+        "email": {
+          "type": "string",
+          "description": "Contact email"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Contact telephone number"
+        },
+        "ageGroup": {
+          "type": "string",
+          "description": "Selected training group (barn, ungdom, voksne)"
+        },
+        "experience": {
+          "type": "string",
+          "description": "Prior martial arts experience"
+        },
+        "message": {
+          "type": "string",
+          "description": "Optional comment or question"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of submission"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "confirmed", "completed"],
+          "description": "Status of the trial request"
+        }
+      },
+      "required": ["name", "email", "phone", "ageGroup", "createdAt", "status"]
+    }
+  },
+  "firestore": {
+    "/clubData/{documentId}": {
+      "schema": {
+        "$ref": "#/entities/ClubData"
+      },
+      "description": "Main club public content and configuration document"
+    },
+    "/trialBookings/{bookingId}": {
+      "schema": {
+        "$ref": "#/entities/TrialBooking"
+      },
+      "description": "Inquiries and bookings for trial training"
+    }
+  }
+}

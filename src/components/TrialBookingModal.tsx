@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ClubConfig } from '../types';
 import { X, CheckCircle2, ChevronRight, ArrowLeft } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { submitTrialBookingToFirestore } from '../lib/firebase';
 
 interface TrialBookingModalProps {
   isOpen: boolean;
@@ -57,6 +58,14 @@ export const TrialBookingModal: React.FC<TrialBookingModalProps> = ({
     if (!form.name || !form.phone) return;
 
     try {
+      submitTrialBookingToFirestore({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        ageGroup: form.group,
+        experience: form.experience,
+        message: form.message,
+      });
       confetti({
         particleCount: 80,
         spread: 60,
