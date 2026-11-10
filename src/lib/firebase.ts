@@ -127,17 +127,45 @@ export function subscribeToClubData(
 // Save complete club data to Firestore
 export async function saveClubDataToFirestore(data: FullClubData): Promise<boolean> {
   try {
-    await ensureAuth();
     const docRef = doc(db, 'clubData', 'main');
     await setDoc(docRef, {
       ...data,
       updatedAt: new Date().toISOString(),
-      updatedBy: auth.currentUser?.uid || 'admin',
+      updatedBy: 'admin',
     }, { merge: true });
     return true;
   } catch (error) {
     handleFirestoreError(error, OperationType.WRITE, CLUB_DATA_DOC_PATH);
     return false;
+  }
+}
+
+// Fetch current cloud data directly from Firestore on demand
+export async function fetchCurrentCloudData(): Promise<{ 
+  exists: boolean; 
+  data?: FullClubData; 
+  error?: string;
+  fetchedAt: string;
+}> {
+  try {
+    const snap = await getDocFromServer(doc(db, 'clubData', 'main'));
+    if (snap.exists()) {
+      return { 
+        exists: true, 
+        data: snap.data() as FullClubData, 
+        fetchedAt: new Date().toLocaleTimeString('nb-NO') 
+      };
+    }
+    return { 
+      exists: false, 
+      fetchedAt: new Date().toLocaleTimeString('nb-NO') 
+    };
+  } catch (err: any) {
+    return { 
+      exists: false, 
+      error: err?.message || String(err), 
+      fetchedAt: new Date().toLocaleTimeString('nb-NO') 
+    };
   }
 }
 

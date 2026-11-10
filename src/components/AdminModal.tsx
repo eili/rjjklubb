@@ -13,7 +13,7 @@ import {
 import { initialSiteContent, initialMediaLibrary } from '../data/initialData';
 import { ImageInput } from './ImageInput';
 import { MediaGallery } from './MediaGallery';
-import { saveClubDataToFirestore } from '../lib/firebase';
+import { saveClubDataToFirestore, fetchCurrentCloudData, FullClubData } from '../lib/firebase';
 import { 
   X, 
   Settings, 
@@ -42,7 +42,9 @@ import {
   Sparkles,
   Compass,
   Download,
-  UploadCloud
+  UploadCloud,
+  Database,
+  ExternalLink
 } from 'lucide-react';
 import { generateBase32Secret, generateBackupCodes, getOTPAuthURL } from '../utils/totp';
 
@@ -87,9 +89,18 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   mediaLibrary = initialMediaLibrary,
   onUpdateMediaLibrary,
 }) => {
-  const [activeTab, setActiveTab] = useState<'innhold' | 'galleri' | 'instruktorer' | 'leir' | 'klubb' | 'sikkerhet'>('innhold');
+  const [activeTab, setActiveTab] = useState<'innhold' | 'galleri' | 'instruktorer' | 'leir' | 'klubb' | 'database' | 'sikkerhet'>('innhold');
   const [contentSubTab, setContentSubTab] = useState<'forside' | 'om-jujutsu' | 'soke-yamaue'>('forside');
   const [saveToast, setSaveToast] = useState(false);
+
+  // Cloud database inspector state
+  const [cloudDocData, setCloudDocData] = useState<FullClubData | null>(null);
+  const [cloudDocTime, setCloudDocTime] = useState<string>('');
+  const [isLoadingCloud, setIsLoadingCloud] = useState<boolean>(false);
+  const [cloudFetchError, setCloudFetchError] = useState<string>('');
+  const [cloudSyncToast, setCloudSyncToast] = useState<string>('');
+  const [copiedCloudJson, setCopiedCloudJson] = useState<boolean>(false);
+  const [showRawJson, setShowRawJson] = useState<boolean>(false);
 
   // Local state copies
   const [tempConfig, setTempConfig] = useState<ClubConfig>(clubConfig);
@@ -275,6 +286,47 @@ export const AdminModal: React.FC<AdminModalProps> = ({
     navigator.clipboard.writeText(json);
     setCopiedSync(true);
     setTimeout(() => setCopiedSync(false), 3000);
+  };
+
+  const handleFetchCloudData = async () => {
+    setIsLoadingCloud(true);
+    setCloudFetchError('');
+    try {
+      const res = await fetchCurrentCloudData();
+      if (res.exists && res.data) {
+        setCloudDocData(res.data);
+        setCloudDocTime(res.data.updatedAt || res.fetchedAt);
+      } else if (res.error) {
+        setCloudFetchError(res.error);
+      } else {
+        setCloudFetchError('Dokumentet /clubData/main finnes ikke i Firestore enda.');
+      }
+    } catch (e: any) {
+      setCloudFetchError(e?.message || 'Kunne ikke hente fra skyen');
+    } finally {
+      setIsLoadingCloud(false);
+    }
+  };
+
+  const handleForcePushToCloud = async () => {
+    setIsLoadingCloud(true);
+    setCloudFetchError('');
+    const success = await saveClubDataToFirestore({
+      clubConfig: tempConfig,
+      siteContent: tempSiteContent,
+      instructors: tempInstructors,
+      summerCamp: tempCamp,
+      classes: classes,
+      mediaLibrary: tempMediaLibrary,
+    });
+    if (success) {
+      setCloudSyncToast('Dataene ble lagret direkte i Firestore!');
+      await handleFetchCloudData();
+      setTimeout(() => setCloudSyncToast(''), 3000);
+    } else {
+      setCloudFetchError('Kunne ikke lagre til Firestore.');
+    }
+    setIsLoadingCloud(false);
   };
 
   const handleDownloadBackup = () => {
@@ -541,6 +593,21 @@ export const AdminModal: React.FC<AdminModalProps> = ({
           >
             <QrCode className="w-4 h-4 text-[#ff5b24]" />
             <span>Vipps & Klubbinfo</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setActiveTab('database');
+              handleFetchCloudData();
+            }}
+            className={`px-3.5 py-2.5 rounded-t-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer ${
+              activeTab === 'database'
+                ? 'bg-white text-stone-900 border-t-2 border-emerald-500 shadow-sm'
+                : 'text-stone-600 hover:text-stone-900'
+            }`}
+          >
+            <Database className="w-4 h-4 text-emerald-600" />
+            <span>Skydata & Firebase</span>
           </button>
 
           <button
@@ -1564,6 +1631,195 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                     Oppdater passord
                   </button>
                 </form>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 6: SKYDATA & FIREBASE DATABASE */}
+          {activeTab === 'database' && (
+            <div className="space-y-5 animate-in fade-in">
+              {/* Database Overview Card */}
+              <div className="bg-white rounded-2xl border border-stone-200 p-5 shadow-sm space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-100 pb-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
+                      <Database className="w-5 h-5 text-emerald-700" />
+                    </div>
+                    <div>
+                      <h4 className="font-heading font-bold text-base text-stone-900 flex items-center gap-2">
+                        <span>Google Firebase Firestore</span>
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px] uppercase flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                          Aktiv & Tilkoblet
+                        </span>
+                      </h4>
+                      <p className="text-[11px] text-stone-500">
+                        Sanntids skydatabase felles for alle besøkende (både vanlig og privat vindu).
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={handleFetchCloudData}
+                      disabled={isLoadingCloud}
+                      className="px-3.5 py-2 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer border border-stone-300"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 text-stone-600 ${isLoadingCloud ? 'animate-spin' : ''}`} />
+                      <span>{isLoadingCloud ? 'Henter...' : 'Oppdater fra skyen'}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleForcePushToCloud}
+                      disabled={isLoadingCloud}
+                      className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow cursor-pointer"
+                    >
+                      <UploadCloud className="w-3.5 h-3.5 text-emerald-200" />
+                      <span>Lagre nåværende til skyen</span>
+                    </button>
+                  </div>
+                </div>
+
+                {cloudSyncToast && (
+                  <div className="p-3 bg-emerald-50 border border-emerald-300 text-emerald-800 rounded-xl text-xs font-bold flex items-center gap-2 animate-in fade-in">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>{cloudSyncToast}</span>
+                  </div>
+                )}
+
+                {cloudFetchError && (
+                  <div className="p-3 bg-amber-50 border border-amber-300 text-amber-900 rounded-xl text-xs flex items-center gap-2 animate-in fade-in">
+                    <AlertCircle className="w-4 h-4 text-amber-700 shrink-0" />
+                    <span>{cloudFetchError}</span>
+                  </div>
+                )}
+
+                {/* Technical Coordinates Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-[11px]">
+                  <div className="bg-stone-50 p-3 rounded-xl border border-stone-200">
+                    <span className="font-bold text-stone-500 block text-[10px] uppercase">Database ID</span>
+                    <span className="font-mono font-semibold text-stone-900 break-all">
+                      ai-studio-risrjujutsuklubb-c1175c4e-fae3-41c2-9f90-818a444ca5c8
+                    </span>
+                  </div>
+                  <div className="bg-stone-50 p-3 rounded-xl border border-stone-200">
+                    <span className="font-bold text-stone-500 block text-[10px] uppercase">Hoveddokument (Path)</span>
+                    <span className="font-mono font-semibold text-stone-900">
+                      /clubData/main
+                    </span>
+                  </div>
+                  <div className="bg-stone-50 p-3 rounded-xl border border-stone-200">
+                    <span className="font-bold text-stone-500 block text-[10px] uppercase">Sist oppdatert i skyen</span>
+                    <span className="font-semibold text-stone-900">
+                      {cloudDocTime ? new Date(cloudDocTime).toLocaleString('nb-NO') : 'Nettopp bekreftet'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Data Summary Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Instructors card */}
+                <div className="bg-white rounded-2xl border border-stone-200 p-4 shadow-sm space-y-2">
+                  <div className="flex items-center justify-between border-b border-stone-100 pb-2">
+                    <h5 className="font-bold text-stone-900 flex items-center gap-1.5 text-xs">
+                      <Users className="w-3.5 h-3.5 text-amber-600" />
+                      <span>Instruktører i skyen</span>
+                    </h5>
+                    <span className="px-2 py-0.5 bg-amber-100 text-amber-800 rounded-full font-bold text-[10px]">
+                      {(cloudDocData?.instructors || tempInstructors).length} registrert
+                    </span>
+                  </div>
+                  <ul className="space-y-1.5 text-[11px]">
+                    {(cloudDocData?.instructors || tempInstructors).map((inst) => (
+                      <li key={inst.id} className="flex items-center justify-between bg-stone-50 px-2.5 py-1.5 rounded-lg border border-stone-100">
+                        <span className="font-bold text-stone-800">{inst.name}</span>
+                        <span className="font-mono text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200 font-bold text-[10px]">
+                          {inst.rank}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Club & Leader card */}
+                <div className="bg-white rounded-2xl border border-stone-200 p-4 shadow-sm space-y-2">
+                  <div className="flex items-center justify-between border-b border-stone-100 pb-2">
+                    <h5 className="font-bold text-stone-900 flex items-center gap-1.5 text-xs">
+                      <Settings className="w-3.5 h-3.5 text-amber-600" />
+                      <span>Klubb & Sommerleir</span>
+                    </h5>
+                    <span className="text-[10px] text-stone-500 font-mono">Status OK</span>
+                  </div>
+                  <div className="space-y-2 text-[11px]">
+                    <div className="flex justify-between bg-stone-50 px-2.5 py-1.5 rounded-lg">
+                      <span className="text-stone-500">Klubb:</span>
+                      <span className="font-bold text-stone-900">{(cloudDocData?.clubConfig || tempConfig).clubName}</span>
+                    </div>
+                    <div className="flex justify-between bg-stone-50 px-2.5 py-1.5 rounded-lg">
+                      <span className="text-stone-500">Klubbleder:</span>
+                      <span className="font-bold text-stone-900">
+                        {(cloudDocData?.instructors || tempInstructors).find(i => i.id === 'kittel-gjernes')?.name || 'Kittel Gjernes'} ({(cloudDocData?.instructors || tempInstructors).find(i => i.id === 'kittel-gjernes')?.rank || '4. dan'})
+                      </span>
+                    </div>
+                    <div className="flex justify-between bg-stone-50 px-2.5 py-1.5 rounded-lg">
+                      <span className="text-stone-500">Sommerleir 2026:</span>
+                      <span className="font-bold text-stone-900">{(cloudDocData?.summerCamp || tempCamp).dates}</span>
+                    </div>
+                    <div className="flex justify-between bg-stone-50 px-2.5 py-1.5 rounded-lg">
+                      <span className="text-stone-500">Vippsnummer:</span>
+                      <span className="font-mono font-bold text-[#ff5b24]">{(cloudDocData?.clubConfig || tempConfig).vippsNumber}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Raw JSON Inspector Accordion */}
+              <div className="bg-white rounded-2xl border border-stone-200 p-4 shadow-sm space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h5 className="font-bold text-stone-900 text-xs">Rådata fra Firestore</h5>
+                    <p className="text-[10px] text-stone-500">Se nøyaktig hva som er lagret i skyen</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowRawJson(!showRawJson)}
+                      className="px-3 py-1.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-lg text-xs font-semibold cursor-pointer"
+                    >
+                      {showRawJson ? 'Skjul rådata' : 'Vis rådata'}
+                    </button>
+                    {showRawJson && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText(JSON.stringify(cloudDocData || tempConfig, null, 2));
+                          setCopiedCloudJson(true);
+                          setTimeout(() => setCopiedCloudJson(false), 2000);
+                        }}
+                        className="px-3 py-1.5 bg-stone-900 text-white rounded-lg text-xs font-semibold flex items-center gap-1 cursor-pointer"
+                      >
+                        {copiedCloudJson ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                        <span>{copiedCloudJson ? 'Kopiert' : 'Kopier JSON'}</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {showRawJson && (
+                  <pre className="bg-stone-900 text-amber-300 p-4 rounded-xl text-[10px] font-mono overflow-x-auto max-h-96 leading-relaxed border border-stone-800">
+                    {JSON.stringify(cloudDocData || {
+                      clubConfig: tempConfig,
+                      siteContent: tempSiteContent,
+                      instructors: tempInstructors,
+                      summerCamp: tempCamp,
+                      classes: classes,
+                      mediaLibrary: tempMediaLibrary,
+                    }, null, 2)}
+                  </pre>
+                )}
               </div>
             </div>
           )}

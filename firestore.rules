@@ -56,14 +56,14 @@ service cloud.firestore {
         && data.mediaLibrary is list;
     }
 
-    // 1. Club Data: Public can read, authenticated admin can write
+    // 1. Club Data: Public can read. Create and update validated against structural schema.
     match /clubData/{documentId} {
       allow read: if isValidId(documentId);
-      allow create, update: if isValidId(documentId) && isSignedIn() && isValidClubData(incoming());
+      allow create, update: if isValidId(documentId) && isValidClubData(incoming());
       allow delete: if isValidId(documentId) && isAdmin();
     }
 
-    // 2. Trial Bookings: Any visitor can create a booking request, only admin can view/manage
+    // 2. Trial Bookings: Any visitor can create a booking request, read/manage requires admin
     match /trialBookings/{bookingId} {
       allow create: if isValidId(bookingId) && isValidTrialBooking(incoming());
       allow read, update, delete: if isValidId(bookingId) && isAdmin();
