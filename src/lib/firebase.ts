@@ -7,7 +7,8 @@ import {
   getDocFromServer,
   collection,
   addDoc,
-  deleteDoc
+  deleteDoc,
+  updateDoc
 } from 'firebase/firestore';
 import { getAuth, signInAnonymously } from 'firebase/auth';
 import firebaseConfig from '../../firebase-applet-config.json';
@@ -18,7 +19,8 @@ import {
   SummerCampInfo, 
   TrainingClass, 
   MediaItem,
-  Member 
+  Member,
+  TrialBooking 
 } from '../types';
 
 export const app = initializeApp(firebaseConfig);
@@ -174,20 +176,37 @@ export async function fetchCurrentCloudData(): Promise<{
 // Save trial booking inquiry from visitor
 export async function submitTrialBookingToFirestore(booking: {
   name: string;
-  email: string;
+  email?: string;
   phone: string;
   ageGroup: string;
   experience?: string;
+  preferredDay?: string;
   message?: string;
 }): Promise<boolean> {
   const path = 'trialBookings';
+  const cleanBooking = {
+    name: booking.name,
+    email: booking.email || '',
+    phone: booking.phone,
+    ageGroup: booking.ageGroup,
+    experience: booking.experience || '',
+    preferredDay: booking.preferredDay || '',
+    message: booking.message || '',
+    createdAt: new Date().toISOString(),
+    status: 'pending' as const,
+  };
   try {
     const colRef = collection(db, path);
-    await addDoc(colRef, {
-      ...booking,
-      createdAt: new Date().toISOString(),
-      status: 'pending',
-    });
+    await addDoc(colRef, cleanBooking);
+
+    // Also cache locally for immediate UI update
+    try {
+      const saved = localStorage.getItem('risor_jujutsu_trial_bookings');
+      const list = saved ? JSON.parse(saved) : [];
+      localStorage.setItem('risor_jujutsu_trial_bookings', JSON.stringify([{ id: 'tb-' + Date.now(), ...cleanBooking }, ...list]));
+    } catch {
+      // ignore local storage error
+    }
     return true;
   } catch (error) {
     handleFirestoreError(error, OperationType.CREATE, path);
@@ -244,4 +263,60 @@ export async function deleteMemberFromFirestore(memberId: string): Promise<boole
     return false;
   }
 }
+
+// Subscribe to trial bookings (inquiries) for admin inbox
+export function subscribeToTrialBookings(
+  onData: (bookings: TrialBooking[]) => void,
+  onError?: (err: any) => void
+) {
+  const colRef = collection(db, 'trialBookings');
+  return onSnapshot(
+    colRef,
+    (snap) => {
+      const bookings: TrialBooking[] = [];
+      snap.forEach((d) => {
+        bookings.push({ id: d.id, ...d.data() } as TrialBooking);
+      });
+      // Sort newest first
+      bookings.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+      onData(bookings);
+    },
+    (error) => {
+      handleFirestoreError(error, OperationType.LIST, 'trialBookings');
+      if (onError) onError(error);
+    }
+  );
+}
+
+// Update trial booking status (e.g., 'confirmed' or 'completed')
+export async function updateTrialBookingInFirestore(
+  bookingId: string, 
+  updates: Partial<TrialBooking>
+): Promise<boolean> {
+  const path = `trialBookings/${bookingId}`;
+  try {
+    const docRef = doc(db, 'trialBookings', bookingId);
+    await updateDoc(docRef, {
+      ...updates,
+      updatedAt: new Date().toISOString(),
+    });
+    return true;
+  } catch (error) {
+    handleFirestoreError(error, OperationType.UPDATE, path);
+    return false;
+  }
+}
+
+// Delete trial booking
+export async function deleteTrialBookingFromFirestore(bookingId: string): Promise<boolean> {
+  const path = `trialBookings/${bookingId}`;
+  try {
+    await deleteDoc(doc(db, 'trialBookings', bookingId));
+    return true;
+  } catch (error) {
+    handleFirestoreError(error, OperationType.DELETE, path);
+    return false;
+  }
+}
+
 

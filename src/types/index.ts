@@ -174,4 +174,18 @@ export interface Member {
   updatedAt?: string;
 }
 
+export interface TrialBooking {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  ageGroup: string;
+  experience?: string;
+  preferredDay?: string;
+  message?: string;
+  createdAt: string;
+  status: 'pending' | 'confirmed' | 'completed';
+}
+
+
 

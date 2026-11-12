@@ -63,6 +63,7 @@ export const TrialBookingModal: React.FC<TrialBookingModalProps> = ({
         email: form.email,
         phone: form.phone,
         ageGroup: form.group,
+        preferredDay: form.preferredDay,
         experience: form.experience,
         message: form.message,
       });

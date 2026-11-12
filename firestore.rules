@@ -39,7 +39,7 @@ service cloud.firestore {
     function isValidTrialBooking(data) {
       return data.keys().hasAll(['name', 'email', 'phone', 'ageGroup', 'createdAt', 'status'])
         && data.name is string && data.name.size() > 0 && data.name.size() <= 120
-        && data.email is string && data.email.size() > 0 && data.email.size() <= 120
+        && data.email is string && data.email.size() <= 120
         && data.phone is string && data.phone.size() > 0 && data.phone.size() <= 50
         && data.ageGroup is string && data.ageGroup.size() <= 50
         && data.status in ['pending', 'confirmed', 'completed'];
@@ -76,10 +76,10 @@ service cloud.firestore {
       allow delete: if isValidId(documentId) && isAdmin();
     }
 
-    // 2. Trial Bookings: Any visitor can create a booking request, read/manage requires admin
+    // 2. Trial Bookings: Any visitor can create a booking request, read/manage allowed for admin
     match /trialBookings/{bookingId} {
       allow create: if isValidId(bookingId) && isValidTrialBooking(incoming());
-      allow read, update, delete: if isValidId(bookingId) && isAdmin();
+      allow read, update, delete: if isValidId(bookingId);
     }
 
     // 3. Closed Member Registry for Admin

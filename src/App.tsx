@@ -35,11 +35,10 @@ import { TrialBookingModal } from './components/TrialBookingModal';
 import { 
   testConnection, 
   subscribeToClubData, 
-  saveClubDataToFirestore,
-  subscribeToMembers,
-  saveMemberToFirestore,
-  deleteMemberFromFirestore
+  saveClubDataToFirestore
 } from './lib/firebase';
+import { useMembers } from './hooks/useMembers';
+import { useTrialBookings } from './hooks/useTrialBookings';
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState<PageTab>('hjem');
@@ -137,15 +136,21 @@ export default function App() {
     }
   });
 
-  // Closed member list state (strictly for admin, synced to Firestore)
-  const [members, setMembers] = useState<Member[]>(() => {
-    try {
-      const saved = localStorage.getItem('risor_jujutsu_members');
-      return saved ? JSON.parse(saved) : initialMembers;
-    } catch {
-      return initialMembers;
-    }
-  });
+  // Members hook & Trial inquiries hook
+  const {
+    members,
+    addMember,
+    updateMember,
+    deleteMember,
+    toggleFee,
+    resetMembers,
+  } = useMembers();
+
+  const {
+    trialBookings,
+    updateStatus: updateTrialStatus,
+    deleteBooking: deleteTrialBooking,
+  } = useTrialBookings();
 
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
@@ -168,22 +173,7 @@ export default function App() {
       if (cloudData.mediaLibrary) setMediaLibrary(cloudData.mediaLibrary);
     });
 
-    let hasSeededMembers = false;
-    const unsubMembers = subscribeToMembers((cloudMembers) => {
-      if (cloudMembers && cloudMembers.length > 0) {
-        setMembers(cloudMembers);
-      } else if (!hasSeededMembers && (!cloudMembers || cloudMembers.length === 0)) {
-        hasSeededMembers = true;
-        initialMembers.forEach((m) => {
-          saveMemberToFirestore(m).catch(() => {});
-        });
-      }
-    });
-
-    return () => {
-      unsubscribe();
-      unsubMembers();
-    };
+    return () => unsubscribe();
   }, []);
 
   // Sync to local storage
@@ -215,10 +205,6 @@ export default function App() {
     localStorage.setItem('risor_jujutsu_media_library', JSON.stringify(mediaLibrary));
   }, [mediaLibrary]);
 
-  useEffect(() => {
-    localStorage.setItem('risor_jujutsu_members', JSON.stringify(members));
-  }, [members]);
-
   const handleResetDefaults = () => {
     setClubConfig(initialClubConfig);
     setInstructors(initialInstructors);
@@ -228,7 +214,7 @@ export default function App() {
     setMfaConfig(initialMFAConfig);
     setSiteContent(initialSiteContent);
     setMediaLibrary(initialMediaLibrary);
-    setMembers(initialMembers);
+    resetMembers();
     setIsAdminAuthenticated(false);
     localStorage.removeItem('risor_jujutsu_club_config');
     localStorage.removeItem('risor_jujutsu_instructors');
@@ -238,7 +224,6 @@ export default function App() {
     localStorage.removeItem('risor_jujutsu_mfa_config');
     localStorage.removeItem('risor_jujutsu_site_content');
     localStorage.removeItem('risor_jujutsu_media_library');
-    localStorage.removeItem('risor_jujutsu_members');
     saveClubDataToFirestore({
       clubConfig: initialClubConfig,
       siteContent: initialSiteContent,
@@ -251,34 +236,6 @@ export default function App() {
 
   const handleOpenVippsCheckout = (product: VippsProduct) => {
     setActiveVippsProduct(product);
-  };
-
-  // Member CRUD handlers
-  const handleAddMember = async (newMember: Member) => {
-    const updated = [newMember, ...members];
-    setMembers(updated);
-    await saveMemberToFirestore(newMember);
-  };
-
-  const handleUpdateMember = async (updatedMember: Member) => {
-    const updated = members.map((m) => (m.id === updatedMember.id ? updatedMember : m));
-    setMembers(updated);
-    await saveMemberToFirestore(updatedMember);
-  };
-
-  const handleDeleteMember = async (id: string) => {
-    const updated = members.filter((m) => m.id !== id);
-    setMembers(updated);
-    await deleteMemberFromFirestore(id);
-  };
-
-  const handleToggleFee = async (member: Member) => {
-    const updatedMember: Member = {
-      ...member,
-      hasPaidFee: !member.hasPaidFee,
-      paidDate: !member.hasPaidFee ? new Date().toISOString().slice(0, 10) : undefined,
-    };
-    await handleUpdateMember(updatedMember);
   };
 
   // Secure admin opening requiring 2FA MFA
@@ -580,10 +537,13 @@ export default function App() {
         mediaLibrary={mediaLibrary}
         onUpdateMediaLibrary={setMediaLibrary}
         members={members}
-        onAddMember={handleAddMember}
-        onUpdateMember={handleUpdateMember}
-        onDeleteMember={handleDeleteMember}
-        onToggleFee={handleToggleFee}
+        onAddMember={addMember}
+        onUpdateMember={updateMember}
+        onDeleteMember={deleteMember}
+        onToggleFee={toggleFee}
+        trialBookings={trialBookings}
+        onUpdateTrialBookingStatus={updateTrialStatus}
+        onDeleteTrialBooking={deleteTrialBooking}
       />
 
       <VippsModal

@@ -9,7 +9,8 @@ import {
   SiteContent, 
   CampPhoto,
   MediaItem,
-  Member
+  Member,
+  TrialBooking
 } from '../types';
 import { initialSiteContent, initialMediaLibrary } from '../data/initialData';
 import { ImageInput } from './ImageInput';
@@ -75,6 +76,9 @@ interface AdminModalProps {
   onUpdateMember?: (member: Member) => void;
   onDeleteMember?: (id: string) => void;
   onToggleFee?: (member: Member) => void;
+  trialBookings?: TrialBooking[];
+  onUpdateTrialBookingStatus?: (id: string, status: 'pending' | 'confirmed' | 'completed') => void;
+  onDeleteTrialBooking?: (id: string) => void;
 }
 
 export const AdminModal: React.FC<AdminModalProps> = ({
@@ -101,10 +105,15 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   onUpdateMember,
   onDeleteMember,
   onToggleFee,
+  trialBookings = [],
+  onUpdateTrialBookingStatus,
+  onDeleteTrialBooking,
 }) => {
   const [activeTab, setActiveTab] = useState<'innhold' | 'galleri' | 'medlemmer' | 'instruktorer' | 'leir' | 'klubb' | 'database' | 'sikkerhet'>('innhold');
   const [contentSubTab, setContentSubTab] = useState<'forside' | 'om-jujutsu' | 'soke-yamaue'>('forside');
   const [saveToast, setSaveToast] = useState(false);
+
+  const pendingTrialCount = trialBookings.filter((b) => b.status === 'pending').length;
 
   // Cloud database inspector state
   const [cloudDocData, setCloudDocData] = useState<FullClubData | null>(null);
@@ -590,7 +599,13 @@ export const AdminModal: React.FC<AdminModalProps> = ({
           >
             <UserCheck className="w-3.5 h-3.5 text-amber-600" />
             <span>Medlemsliste ({members?.length || 0})</span>
-            <span className="text-[9px] bg-stone-900 text-amber-400 font-bold px-1.5 py-0.5 rounded-full ml-0.5">LUKKET</span>
+            {pendingTrialCount > 0 ? (
+              <span className="text-[9px] bg-amber-500 text-stone-950 font-black px-1.5 py-0.5 rounded-full ml-0.5 animate-pulse">
+                {pendingTrialCount} nye prøvetimer
+              </span>
+            ) : (
+              <span className="text-[9px] bg-stone-900 text-amber-400 font-bold px-1.5 py-0.5 rounded-full ml-0.5">LUKKET</span>
+            )}
           </button>
 
           <button
@@ -911,7 +926,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
             </div>
           )}
 
-          {/* TAB: LUKKET MEDLEMSLISTE */}
+          {/* TAB: LUKKET MEDLEMSLISTE & PRØVETIMER */}
           {activeTab === 'medlemmer' && (
             <MemberList
               members={members || []}
@@ -919,6 +934,9 @@ export const AdminModal: React.FC<AdminModalProps> = ({
               onUpdateMember={onUpdateMember || (() => {})}
               onDeleteMember={onDeleteMember || (() => {})}
               onToggleFee={onToggleFee || (() => {})}
+              trialBookings={trialBookings}
+              onUpdateTrialBookingStatus={onUpdateTrialBookingStatus}
+              onDeleteTrialBooking={onDeleteTrialBooking}
             />
           )}
 
