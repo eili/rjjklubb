@@ -128,8 +128,8 @@ export function subscribeToClubData(
   );
 }
 
-// Save complete club data to Firestore
-export async function saveClubDataToFirestore(data: FullClubData): Promise<boolean> {
+// Save complete or partial club data to Firestore
+export async function saveClubDataToFirestore(data: Partial<FullClubData>): Promise<boolean> {
   try {
     const docRef = doc(db, 'clubData', 'main');
     await setDoc(docRef, {

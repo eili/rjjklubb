@@ -94,22 +94,80 @@ export const AboutJuJitsu: React.FC<AboutJuJitsuProps> = ({
             <span>Risør Ju Jutsu • 日本柔術</span>
           </div>
           <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-4">
-            {aboutData?.title || 'Hva er Tradisjonell Japansk Ju Jitsu?'}
+            {aboutData?.title || 'Hva er Ju Jutsu?'}
           </h1>
           <p className="text-stone-300 text-base sm:text-lg max-w-3xl leading-relaxed">
             {aboutData?.intro || (
               <>
-                Ju Jitsu er en av verdens eldste og mest helhetlige kampsporter. 
-                Direkte oversatt betyr det <strong className="text-amber-400">«den myke kunst»</strong> – 
-                kunsten å nøytralisere rå, brutal makt gjennom smidighet, biomekanikk og balansebrudd.
+                Ju Jutsu er en tradisjonell japansk kampform tilpasset moderne forhold. 
+                Vi kombinerer det beste fra tradisjonell kampsport og moderne selvforsvar gjennom både{' '}
+                <strong className="text-amber-400">Goho</strong> (hard form) og{' '}
+                <strong className="text-amber-400">Juho</strong> (myk form).
               </>
             )}
           </p>
         </div>
       </section>
 
+      {/* Velkommen & Goho / Juho Breakdown (from risor.jujutsu.no) */}
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-4">
+        <div className="bg-white p-6 sm:p-8 rounded-2xl border border-stone-200 shadow-sm space-y-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-stone-100 pb-5">
+            <div>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-amber-700">
+                Velkommen til Dojoen i underetasjen i Risørhallen
+              </span>
+              <h2 className="font-heading text-2xl font-extrabold text-stone-900 mt-1">
+                {aboutData?.historyTitle || 'Mestring for liten og stor'}
+              </h2>
+            </div>
+            <blockquote className="text-xs italic text-stone-700 bg-amber-50/80 border-l-4 border-amber-500 px-4 py-2.5 rounded-r-xl max-w-md">
+              {aboutData?.philosophyQuote || '«Gå til Dojoen, ha det gøy, har du det gøy kommer du tilbake. Kommer du tilbake blir du dyktig.»'}
+            </blockquote>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-stone-700 leading-relaxed">
+            <div className="space-y-3">
+              <p>
+                {aboutData?.historyText ||
+                  'Risør Ju Jutsu klubb er for alle som har lyst til å trene kampsport. Vi skaper mestring for liten og stor. Hos oss vil du lære å forsvare deg mot håndleddsgrep, strupetak, hodelåser, slag og spark.'}
+              </p>
+              <p className="text-xs text-stone-600">
+                <strong>Bryt dine barrierer:</strong> Møt opp på trening – vi er helt sikre på at du vil lære noe nytt om bevegelse, koordinasjon, smerte, smertekontroll og kroppsbeherskelse. Teknikkene er basert på grunnleggende prinsipper som fungerer og tilpasses den enkelte utøver.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="p-4 rounded-xl bg-stone-900 text-stone-100 border border-stone-800">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-heading font-bold text-amber-400 text-base">Goho (剛法)</span>
+                  <span className="text-[10px] uppercase tracking-wider text-stone-400">Hard form</span>
+                </div>
+                <p className="text-xs text-stone-300 leading-relaxed">
+                  Slag, spark og blokkeringer – direkte og presise teknikker for å stoppe eller avlede et angrep og skape avstand.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-stone-50 text-stone-900 border border-stone-200">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-heading font-bold text-stone-900 text-base">Juho (柔法)</span>
+                  <span className="text-[10px] uppercase tracking-wider text-amber-700 font-bold">Myk form</span>
+                </div>
+                <p className="text-xs text-stone-600 leading-relaxed">
+                  Frigjøringer, kast og låsinger – bruk angriperens egen kraft og balanse for å ta kontroll uten unødig rå styrke.
+                </p>
+              </div>
+
+              <div className="sm:col-span-2 p-3.5 rounded-xl bg-stone-50 border border-stone-200 text-xs text-stone-700">
+                <strong>For både barn og voksne:</strong> Barnepartiene tar inn nye fra 2. klasse (hvitt og gult belte sammen kl. 17:00, oransje+ kl. 18:10 på tirsdager). Voksne fra 15 år trener torsdager kl. 19:30.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Philosophy Essence (Kanji Breakdown) */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-white p-8 rounded-2xl border border-stone-200 shadow-sm">
           <div className="flex items-center gap-6">
             <div className="w-24 h-24 rounded-2xl bg-stone-900 text-amber-400 flex flex-col items-center justify-center font-heading text-3xl font-black shrink-0 border border-stone-700 shadow-md">

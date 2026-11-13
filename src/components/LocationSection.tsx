@@ -42,8 +42,8 @@ export const LocationSection: React.FC<LocationSectionProps> = ({
             Beliggenhet & Veibeskrivelse
           </h1>
           <p className="text-stone-300 text-base sm:text-lg max-w-3xl leading-relaxed">
-            Velkommen til vår dojo i Oslo. Her trener vi i romslige, spesialtilpassede lokaler 
-            med førsteklasses tatami-matter, god ventilasjon og moderne garderober.
+            Velkommen til vår dojo i underetasjen i Risørhallen. Her trener barn, ungdom og voksne i 
+            trygge, kontrollerte omgivelser med fokus på mestring, samhold og selvforsvar.
           </p>
         </div>
       </section>
@@ -67,8 +67,12 @@ export const LocationSection: React.FC<LocationSectionProps> = ({
                 />
                 
                 {/* Overlay Pin Badge */}
-                <div className="absolute top-4 left-4 bg-stone-900/90 text-white px-3.5 py-2 rounded-xl backdrop-blur-md border border-stone-700 shadow-lg flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-amber-500 animate-pulse"></div>
+                <div className="absolute top-4 left-4 bg-stone-900/90 text-white px-3.5 py-2 rounded-xl backdrop-blur-md border border-stone-700 shadow-lg flex items-center gap-2.5">
+                  <img
+                    src="/rjjk-logo.png"
+                    alt="RJJK"
+                    className="w-7 h-7 rounded-full bg-white p-0.5 object-contain shrink-0"
+                  />
                   <div>
                     <div className="text-xs font-bold leading-tight">{clubConfig.clubName}</div>
                     <div className="text-[10px] text-stone-300">{clubConfig.dojoAddress.street}</div>
@@ -98,12 +102,10 @@ export const LocationSection: React.FC<LocationSectionProps> = ({
             <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm space-y-2">
               <h3 className="font-heading font-bold text-sm text-stone-900 flex items-center gap-2">
                 <Navigation className="w-4 h-4 text-amber-600" />
-                Slik finner du inngangen
+                Slik finner du dojoen i Risørhallen
               </h3>
               <p className="text-xs text-stone-600 leading-relaxed">
-                {clubConfig.dojoAddress.directions} 
-                Når du ankommer, gå inn hovedinngang B. Ta trappen eller heisen til 2. etasje. 
-                Dojoen er merket med klubbens logo og japansk kanji 柔術.
+                {clubConfig.dojoAddress.directions}
               </p>
             </div>
           </div>

@@ -20,8 +20,8 @@ export const TrialBookingModal: React.FC<TrialBookingModalProps> = ({
     name: '',
     phone: '',
     email: '',
-    group: 'Voksne Nybegynnere',
-    preferredDay: 'Mandag kl 18:45',
+    group: 'Voksne (fra 15 år)',
+    preferredDay: 'Torsdag kl 19:30 – 21:00 (Voksne 15+ år)',
     experience: 'Ingen tidligere erfaring',
     message: '',
   });
@@ -95,8 +95,8 @@ export const TrialBookingModal: React.FC<TrialBookingModalProps> = ({
         {/* Header - Fixed at top */}
         <div className="bg-stone-900 text-white px-5 py-4 flex items-center justify-between border-b border-stone-800 shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-500 text-stone-950 flex items-center justify-center font-bold text-sm">
-              柔
+            <div className="w-9 h-9 rounded-full bg-white p-0.5 border border-amber-400/70 flex items-center justify-center overflow-hidden shrink-0">
+              <img src="/rjjk-logo.png" alt="Risør Ju Jutsu Klubb" className="w-full h-full object-contain rounded-full" />
             </div>
             <div>
               <h3 id="trial-modal-title" className="font-heading font-bold text-sm text-white">
@@ -212,9 +212,9 @@ export const TrialBookingModal: React.FC<TrialBookingModalProps> = ({
                       onChange={(e) => setForm({ ...form, group: e.target.value })}
                       className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-xs text-stone-900 focus:outline-none focus:border-amber-500"
                     >
-                      <option>Voksne Nybegynnere (14+ år)</option>
-                      <option>Barn & Ungdom (8-13 år)</option>
-                      <option>Viderekomne & Sortbelter</option>
+                      <option>Voksne (fra 15 år)</option>
+                      <option>Barn nybegynner / gult belte (fra 2. klasse)</option>
+                      <option>Barn viderekomne (oransje+ belte)</option>
                     </select>
                   </div>
                   <div>
@@ -224,10 +224,9 @@ export const TrialBookingModal: React.FC<TrialBookingModalProps> = ({
                       onChange={(e) => setForm({ ...form, preferredDay: e.target.value })}
                       className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-xs text-stone-900 focus:outline-none focus:border-amber-500"
                     >
-                      <option>Mandag kl 18:45 (Voksne)</option>
-                      <option>Mandag kl 17:30 (Barn)</option>
-                      <option>Torsdag kl 18:30 (Felles/Nybegynner)</option>
-                      <option>Lørdag kl 11:00 (Åpen matte)</option>
+                      <option>Torsdag kl 19:30 – 21:00 (Voksne 15+ år)</option>
+                      <option>Tirsdag kl 17:00 – 18:00 (Barn nybegynnere / gult)</option>
+                      <option>Tirsdag kl 18:10 – 19:20 (Barn viderekomne oransje+)</option>
                     </select>
                   </div>
                 </div>

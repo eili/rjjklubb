@@ -167,8 +167,9 @@ export const ScheduleSection: React.FC<ScheduleSectionProps> = ({
             Treningstider & Partier
           </h1>
           <p className="text-stone-300 text-base sm:text-lg max-w-3xl leading-relaxed">
-            Her finner du ukens fulle treningsoversikt. Både barn, ungdom, nybegynnere og viderekomne 
-            kan trene regelmessig i dojoen. Administratorer kan legge til, redigere og slette økter direkte.
+            Treningene holdes i underetasjen i Risørhallen og følger skoleruta. Barn starter fra 2. klasse 
+            (tirsdager kl. 17:00 for nybegynnere/gult belte og kl. 18:10 for oransje+ belte), og voksne fra 
+            15 år trener torsdager kl. 19:30–21:00.
           </p>
 
           {/* Toast message notification */}

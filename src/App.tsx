@@ -35,19 +35,84 @@ import { TrialBookingModal } from './components/TrialBookingModal';
 import { 
   testConnection, 
   subscribeToClubData, 
-  saveClubDataToFirestore
+  saveClubDataToFirestore,
+  FullClubData
 } from './lib/firebase';
 import { useMembers } from './hooks/useMembers';
 import { useTrialBookings } from './hooks/useTrialBookings';
 
+function migrateLegacyClubConfig(cfg: ClubConfig): { data: ClubConfig; changed: boolean } {
+  const isLegacyEmail = cfg.contactPerson?.email === 'kittel@risorjujutsu.no';
+  const isLegacyPhone = cfg.contactPerson?.phone === '+47 920 14 550';
+  const isLegacyStreet = cfg.dojoAddress?.street === 'Risørhallen, Caspersens vei 1';
+  if (!isLegacyEmail && !isLegacyPhone && !isLegacyStreet) {
+    return { data: cfg, changed: false };
+  }
+  return {
+    changed: true,
+    data: {
+      ...cfg,
+      clubName: cfg.clubName === 'Risør Ju Jutsu klubb' ? initialClubConfig.clubName : cfg.clubName,
+      styleName: cfg.styleName === 'Nihon Ju Jutsu / Yamaue Ryu' ? initialClubConfig.styleName : cfg.styleName,
+      contactPerson: {
+        ...cfg.contactPerson,
+        role: isLegacyEmail ? initialClubConfig.contactPerson.role : cfg.contactPerson.role,
+        email: isLegacyEmail ? initialClubConfig.contactPerson.email : cfg.contactPerson.email,
+        phone: isLegacyPhone ? initialClubConfig.contactPerson.phone : cfg.contactPerson.phone,
+      },
+      dojoAddress: {
+        ...cfg.dojoAddress,
+        street: isLegacyStreet ? initialClubConfig.dojoAddress.street : cfg.dojoAddress.street,
+        directions: isLegacyStreet ? initialClubConfig.dojoAddress.directions : cfg.dojoAddress.directions,
+        transitInfo: isLegacyStreet ? initialClubConfig.dojoAddress.transitInfo : cfg.dojoAddress.transitInfo,
+      },
+    },
+  };
+}
+
+function migrateLegacySiteContent(content: SiteContent): { data: SiteContent; changed: boolean } {
+  const isLegacyHero = content.hero?.title === 'Mykhet overvinner rå styrke';
+  const isLegacyAbout = content.aboutJuJitsu?.title === 'Hva er Tradisjonell Japansk Ju Jitsu?';
+  if (!isLegacyHero && !isLegacyAbout) {
+    return { data: content, changed: false };
+  }
+  return {
+    changed: true,
+    data: {
+      ...content,
+      hero: isLegacyHero ? { ...initialSiteContent.hero, bgImage: content.hero.bgImage } : content.hero,
+      aboutJuJitsu: isLegacyAbout ? { ...initialSiteContent.aboutJuJitsu, image: content.aboutJuJitsu.image } : content.aboutJuJitsu,
+    },
+  };
+}
+
+function migrateLegacyClasses(clsList: TrainingClass[]): { data: TrainingClass[]; changed: boolean } {
+  const hasOldPlaceholder =
+    clsList.length === 6 &&
+    clsList[0]?.id === 'c-1' &&
+    clsList[0]?.day === 'Mandag' &&
+    clsList[0]?.time === '17:30 – 18:30';
+  if (!hasOldPlaceholder) {
+    return { data: clsList, changed: false };
+  }
+  return { data: initialClasses, changed: true };
+}
+
+function migrateLegacyMediaLibrary(items: MediaItem[]): { data: MediaItem[]; changed: boolean } {
+  if (items.some((item) => item.id === 'media-logo' || item.url === '/rjjk-logo.png')) {
+    return { data: items, changed: false };
+  }
+  return { data: [initialMediaLibrary[0], ...items], changed: true };
+}
+
 export default function App() {
   const [currentTab, setCurrentTab] = useState<PageTab>('hjem');
 
-  // Local storage state with fallbacks
+  // Local storage state with fallbacks + automatic migration of legacy placeholder defaults
   const [clubConfig, setClubConfig] = useState<ClubConfig>(() => {
     try {
       const saved = localStorage.getItem('risor_jujutsu_club_config');
-      return saved ? JSON.parse(saved) : initialClubConfig;
+      return saved ? migrateLegacyClubConfig(JSON.parse(saved)).data : initialClubConfig;
     } catch {
       return initialClubConfig;
     }
@@ -65,8 +130,10 @@ export default function App() {
               rank: '4. dan',
               title: 'Sensei / Klubbleder',
               role: 'Klubbleder og Hovedinstruktør Risør',
+              email: inst.email === 'kittel@risorjujutsu.no' ? initialInstructors[1].email : inst.email,
+              phone: inst.phone === '+47 920 14 550' ? initialInstructors[1].phone : inst.phone,
               certifications: [
-                '4. dan Ju Jutsu (gradert v/ Soke Yamaue)',
+                '4. dan sort belte Ju Jutsu (gradert v/ Soke Yamaue)',
                 'Trener Sertifisering - Norges Kampsportforbund (NKF)',
                 'Politiattest og førstehjelpsgodkjenning'
               ],
@@ -93,7 +160,7 @@ export default function App() {
   const [classes, setClasses] = useState<TrainingClass[]>(() => {
     try {
       const saved = localStorage.getItem('risor_jujutsu_classes');
-      return saved ? JSON.parse(saved) : initialClasses;
+      return saved ? migrateLegacyClasses(JSON.parse(saved)).data : initialClasses;
     } catch {
       return initialClasses;
     }
@@ -102,7 +169,12 @@ export default function App() {
   const [vippsProducts, setVippsProducts] = useState<VippsProduct[]>(() => {
     try {
       const saved = localStorage.getItem('risor_jujutsu_vipps_products');
-      return saved ? JSON.parse(saved) : initialVippsProducts;
+      if (saved) {
+        const parsed: VippsProduct[] = JSON.parse(saved);
+        const hasLegacyPrice = parsed.some((p) => p.id === 'vp-sem-voksen' && p.amount === 2450);
+        return hasLegacyPrice ? initialVippsProducts : parsed;
+      }
+      return initialVippsProducts;
     } catch {
       return initialVippsProducts;
     }
@@ -121,7 +193,7 @@ export default function App() {
   const [siteContent, setSiteContent] = useState<SiteContent>(() => {
     try {
       const saved = localStorage.getItem('risor_jujutsu_site_content');
-      return saved ? JSON.parse(saved) : initialSiteContent;
+      return saved ? migrateLegacySiteContent(JSON.parse(saved)).data : initialSiteContent;
     } catch {
       return initialSiteContent;
     }
@@ -130,7 +202,7 @@ export default function App() {
   const [mediaLibrary, setMediaLibrary] = useState<MediaItem[]>(() => {
     try {
       const saved = localStorage.getItem('risor_jujutsu_media_library');
-      return saved ? JSON.parse(saved) : initialMediaLibrary;
+      return saved ? migrateLegacyMediaLibrary(JSON.parse(saved)).data : initialMediaLibrary;
     } catch {
       return initialMediaLibrary;
     }
@@ -165,12 +237,54 @@ export default function App() {
     testConnection();
 
     const unsubscribe = subscribeToClubData((cloudData) => {
-      if (cloudData.clubConfig) setClubConfig(cloudData.clubConfig);
-      if (cloudData.siteContent) setSiteContent(cloudData.siteContent);
-      if (cloudData.instructors) setInstructors(cloudData.instructors);
+      let needsCloudMigration = false;
+      const migratedPayload: Partial<FullClubData> = {};
+
+      if (cloudData.clubConfig) {
+        const res = migrateLegacyClubConfig(cloudData.clubConfig);
+        setClubConfig(res.data);
+        if (res.changed) {
+          needsCloudMigration = true;
+          migratedPayload.clubConfig = res.data;
+        }
+      }
+      if (cloudData.siteContent) {
+        const res = migrateLegacySiteContent(cloudData.siteContent);
+        setSiteContent(res.data);
+        if (res.changed) {
+          needsCloudMigration = true;
+          migratedPayload.siteContent = res.data;
+        }
+      }
+      if (cloudData.instructors) {
+        const mapped = cloudData.instructors.map((inst) =>
+          inst.id === 'kittel-gjernes' && inst.email === 'kittel@risorjujutsu.no'
+            ? { ...inst, email: initialInstructors[1].email, phone: initialInstructors[1].phone, rank: '4. dan' }
+            : inst
+        );
+        setInstructors(mapped);
+      }
       if (cloudData.summerCamp) setSummerCamp(cloudData.summerCamp);
-      if (cloudData.classes) setClasses(cloudData.classes);
-      if (cloudData.mediaLibrary) setMediaLibrary(cloudData.mediaLibrary);
+      if (cloudData.classes) {
+        const res = migrateLegacyClasses(cloudData.classes);
+        setClasses(res.data);
+        if (res.changed) {
+          needsCloudMigration = true;
+          migratedPayload.classes = res.data;
+        }
+      }
+      if (cloudData.mediaLibrary) {
+        const res = migrateLegacyMediaLibrary(cloudData.mediaLibrary);
+        setMediaLibrary(res.data);
+        if (res.changed) {
+          needsCloudMigration = true;
+          migratedPayload.mediaLibrary = res.data;
+        }
+      }
+
+      if (needsCloudMigration) {
+        saveClubDataToFirestore(migratedPayload);
+      }
     });
 
     return () => unsubscribe();
@@ -283,14 +397,14 @@ export default function App() {
               <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center max-w-2xl mx-auto mb-12">
                   <span className="text-xs font-bold uppercase tracking-widest text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
-                    Budo & Samuraikultur
+                    Tradisjonell kampform tilpasset moderne forhold
                   </span>
                   <h2 className="font-heading text-3xl font-extrabold text-stone-900 mt-3">
-                    Klassisk Japansk Kampsport
+                    Mestring for liten og stor
                   </h2>
                   <p className="text-sm text-stone-600 mt-2 leading-relaxed">
-                    Tradisjonell japansk Ju Jitsu handler om å uskadeliggjøre trusler med presisjon, 
-                    leddlåser, balansebrudd og kast. Ingen rå styrke kreves.
+                    Risør Ju Jutsu klubb er for alle som har lyst til å trene kampsport. 
+                    Gjennom Goho (hard form) og Juho (myk form) lærer du funksjonell styrke, smertekontroll, kroppsbeherskelse og effektivt selvforsvar.
                   </p>
                 </div>
 
@@ -299,17 +413,17 @@ export default function App() {
                     onClick={() => setCurrentTab('tradisjon')}
                     className="p-6 rounded-2xl bg-stone-50 border border-stone-200 hover:border-amber-500/60 hover:shadow-md transition-all cursor-pointer group"
                   >
-                    <div className="w-12 h-12 rounded-xl bg-stone-900 text-amber-400 font-heading text-xl font-bold flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
-                      柔
+                    <div className="w-12 h-12 rounded-full bg-white border border-stone-200 p-1 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform overflow-hidden shadow-xs">
+                      <img src="/rjjk-logo.png" alt="Risør Ju Jutsu Klubb" className="w-full h-full object-contain rounded-full" />
                     </div>
                     <h3 className="font-heading font-bold text-lg text-stone-900 group-hover:text-amber-700 transition-colors">
-                      Hva er Ju Jitsu?
+                      Hva er Ju Jutsu?
                     </h3>
                     <p className="text-xs text-stone-600 mt-2 leading-relaxed">
-                      Lær om historien fra samuraiene, filosofien «mykhet overvinner hardhet» og de seks tekniske grenene.
+                      Kombinasjonen av tradisjonell kampsport og moderne selvforsvar: Goho (slag/spark) og Juho (frigjøringer, kast og låsinger).
                     </p>
                     <span className="mt-4 inline-block text-xs font-bold text-amber-700">
-                      Les om tradisjonen →
+                      Les om Goho & Juho →
                     </span>
                   </div>
 
@@ -376,8 +490,8 @@ export default function App() {
                         4. dan Sensei
                       </div>
                       <div className="absolute bottom-4 left-4 right-4 bg-stone-950/85 backdrop-blur-md p-3.5 rounded-xl border border-stone-800 text-white text-xs">
-                        <span className="font-bold text-amber-400 block text-xs">Klubbleder & Hovedinstruktør</span>
-                        <span className="text-stone-300 text-[11px]">Risørhallen, Caspersens vei 1</span>
+                        <span className="font-bold text-amber-400 block text-xs">Sensei & Klubbleder</span>
+                        <span className="text-stone-300 text-[11px]">{clubConfig.dojoAddress.street}, {clubConfig.dojoAddress.postalCode} {clubConfig.dojoAddress.city}</span>
                       </div>
                     </div>
                   </div>
@@ -387,24 +501,23 @@ export default function App() {
                       <span>Klubbens Ledelse i Risør</span>
                     </div>
                     <h2 className="font-heading text-3xl font-extrabold text-stone-900">
-                      Kittel Gjernes
+                      Sensei Kittel Gjernes
                     </h2>
                     <div className="flex flex-wrap items-center gap-2.5 text-xs text-stone-600 font-medium">
                       <span className="px-2.5 py-1 rounded-md bg-stone-900 text-amber-400 font-mono font-bold text-xs">
-                        4. dan
+                        4. dan sort belte
                       </span>
-                      <span>Klubbleder og Hovedinstruktør Risør Ju Jutsu klubb</span>
+                      <span>Klubbleder og Hovedinstruktør • Risør Ju Jutsu Klubb</span>
                     </div>
 
                     <div className="p-3.5 rounded-2xl bg-stone-50 border-l-4 border-amber-500 text-xs italic text-stone-700 leading-relaxed">
-                      «Ju Jutsu i Risør bygger trygge, modige og sindige mennesker både på og utenfor tatamien.»
+                      «Gå til Dojoen, ha det gøy, har du det gøy kommer du tilbake. Kommer du tilbake blir du dyktig.»
                     </div>
 
                     <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
-                      Kittel Gjernes er klubbleder for Risør Ju Jutsu klubb og innehar 4. dan. 
-                      Som direkte elev under stilartsoverhode Soke Yamaue (København) leder Kittel 
-                      undervisningen i Risørhallen for barn, ungdom, voksne nybegynnere og viderekomne. 
-                      Han er sertifisert instruktør under Norges Kampsportforbund med fokus på teknisk presisjon, trygghet og fellesskap.
+                      Sensei Kittel Gjernes (4. dan sort belte) er en av de i Norge som har holdt på lengst med Ju Jutsu. 
+                      Sammen med klubbens instruktørteam leder han treningene i underetasjen i Risørhallen for både barn (fra 2. klasse) og voksne (fra 15 år). 
+                      Bryt dine barrierer og opplev trygghet, samhold, respekt og funksjonell styrke på matten.
                     </p>
 
                     <div className="pt-2 flex flex-wrap gap-3">

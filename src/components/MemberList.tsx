@@ -1006,9 +1006,16 @@ export const MemberList: React.FC<MemberListProps> = ({
           {/* Printable Attendance Sheet Preview */}
           <div className="border border-stone-300 p-6 rounded-xl bg-white shadow-xs max-w-4xl mx-auto text-black">
             <div className="flex justify-between items-center border-b-2 border-stone-900 pb-3 mb-4">
-              <div>
-                <h3 className="font-heading font-bold text-lg text-black">RISØR JU JUTSU KLUBB</h3>
-                <p className="text-xs text-stone-700">Dojo: Risørhallen | Klubbleder: Sensei Kittel Gjernes (4. Dan)</p>
+              <div className="flex items-center gap-3">
+                <img
+                  src="/rjjk-logo.png"
+                  alt="Risør Ju Jutsu Klubb"
+                  className="w-12 h-12 rounded-full object-contain border border-stone-300 bg-white shrink-0"
+                />
+                <div>
+                  <h3 className="font-heading font-bold text-lg text-black">RISØR JU JUTSU KLUBB</h3>
+                  <p className="text-xs text-stone-700">Dojo: Underetasjen i Risørhallen | Sensei Kittel Gjernes (4. dan)</p>
+                </div>
               </div>
               <div className="text-right">
                 <span className="text-sm font-bold bg-stone-100 px-3 py-1 rounded border border-stone-400">

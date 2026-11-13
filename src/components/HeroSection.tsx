@@ -27,8 +27,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 }) => {
   const heroData = siteContent?.hero;
   const bgImg = heroData?.bgImage || 'https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&w=2000&q=80';
-  const heroTitle = heroData?.title || 'Mykhet overvinner rå styrke';
-  const heroDesc = heroData?.description || `Velkommen til ${clubConfig.clubName}. Opplev den opprinnelige japanske kampsporten som samuraiene utviklet for ubevæpnet kamp. Hos oss lærer du presise leddlåser, kast, frigjøringsteknikker og mental styrke i et trygt og inkluderende fellesskap.`;
+  const heroTitle = heroData?.title || 'Trygghet, samhold og respekt';
+  const heroDesc = heroData?.description || 'Velkommen til Risør Ju Jutsu Klubb i underetasjen i Risørhallen. Vi skaper mestring for liten og stor – lær selvforsvar av erfarne instruktører, få funksjonell styrke og bryt dine barrierer i et inkluderende fellesskap.';
+  const heroQuote = heroData?.kittelQuote || '«Gå til Dojoen, ha det gøy, har du det gøy kommer du tilbake. Kommer du tilbake blir du dyktig.»';
 
   return (
     <div className="relative overflow-hidden bg-stone-900 text-stone-100">
@@ -43,27 +44,45 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20 sm:pt-24 sm:pb-28">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-20 sm:pt-20 sm:pb-24">
         {/* Japanese Lineage & Club Leadership Top Pill */}
         <div className="inline-flex flex-wrap items-center gap-2 px-3.5 py-1.5 rounded-full bg-stone-800/80 border border-stone-700/80 backdrop-blur-md mb-8 text-xs text-stone-300">
           <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
           <span className="font-semibold text-amber-400">{clubConfig.clubName}</span>
           <span className="text-stone-600">•</span>
-          <span className="text-stone-200 font-medium">Klubbleder: Kittel Gjernes (4. Dan)</span>
+          <span className="text-stone-200 font-medium">Sensei Kittel Gjernes (4. dan)</span>
           <span className="text-stone-600">•</span>
-          <span className="text-stone-300">Stilart: {clubConfig.sokeName} ({clubConfig.sokeCity})</span>
+          <span className="text-stone-300">Underetasjen i Risørhallen</span>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Main Hero Text (Left 7 cols) */}
           <div className="lg:col-span-7 space-y-6">
-            <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
-              {heroTitle}
-            </h1>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-5">
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-white p-1.5 shadow-2xl shadow-amber-500/20 border-2 border-amber-400/80 shrink-0 overflow-hidden">
+                <img
+                  src="/rjjk-logo.png"
+                  alt="Risør Ju Jutsu Klubb – Offisiell rund logo"
+                  className="w-full h-full object-contain rounded-full"
+                />
+              </div>
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest text-amber-400 mb-1.5">
+                  {heroData?.subtitle || 'Tradisjonell kampform tilpasset moderne forhold'}
+                </p>
+                <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
+                  {heroTitle}
+                </h1>
+              </div>
+            </div>
 
             <p className="text-lg sm:text-xl text-stone-300 font-light leading-relaxed max-w-2xl">
               {heroDesc}
             </p>
+
+            <blockquote className="border-l-2 border-amber-500 pl-4 py-1 text-sm italic text-amber-200/90 max-w-xl">
+              {heroQuote}
+            </blockquote>
 
             {/* Quick action buttons */}
             <div className="pt-2 flex flex-wrap gap-3.5 items-center">
@@ -96,15 +115,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <div className="pt-4 flex flex-wrap items-center gap-6 text-xs text-stone-400">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span>Ingen forkunnskaper kreves</span>
+                <span>Mestring for liten og stor</span>
               </div>
               <div className="flex items-center gap-2">
                 <Users className="w-4 h-4 text-amber-400" />
-                <span>Grupper for barn, ungdom og voksne</span>
+                <span>Barn fra 2. klasse • Voksne fra 15 år</span>
               </div>
               <div className="flex items-center gap-2">
                 <Award className="w-4 h-4 text-blue-400" />
-                <span>Internasjonalt godkjente Dan-grader</span>
+                <span>Treningene følger skoleruta</span>
               </div>
             </div>
           </div>
@@ -224,9 +243,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="text-stone-200 font-bold text-sm">Autentisk Selvforsvar</h4>
+                <h4 className="text-stone-200 font-bold text-sm">Trygghet, samhold og respekt</h4>
                 <p className="text-stone-400 text-xs mt-1 leading-relaxed">
-                  Ikke sportslige restriksjoner, men rasjonelt forsvar mot slag, spark, kvelertak og våpen.
+                  Lær selvforsvar av erfarne instruktører. Vi skaper mestring for liten og stor i Risørhallen.
                 </p>
               </div>
             </div>
@@ -236,9 +255,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <Sparkles className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="text-stone-200 font-bold text-sm">Budo & Filosofi</h4>
+                <h4 className="text-stone-200 font-bold text-sm">Funksjonell styrke</h4>
                 <p className="text-stone-400 text-xs mt-1 leading-relaxed">
-                  Respekt (Reiho), mental tilstedeværelse (Zanshin) og balanse i kropp og sinn.
+                  Kom i form med meningsfylt trening – utvikle bevegelse, koordinasjon, smertekontroll og kroppsbeherskelse.
                 </p>
               </div>
             </div>
@@ -248,9 +267,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <Award className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="text-stone-200 font-bold text-sm">Mester fra København</h4>
+                <h4 className="text-stone-200 font-bold text-sm">Goho & Juho – Selvforsvar</h4>
                 <p className="text-stone-400 text-xs mt-1 leading-relaxed">
-                  Direkte linje til Soke Yamaue og Hombu Dojo i København med faste årlige samlinger.
+                  Tradisjonell kampform tilpasset moderne forhold: både hard form (slag/spark) og myk form (kast/låsinger).
                 </p>
               </div>
             </div>
@@ -260,9 +279,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <QrCode className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="text-stone-200 font-bold text-sm">Enkel Vipps-betaling</h4>
+                <h4 className="text-stone-200 font-bold text-sm">Støtteordning & Enkel Vipps</h4>
                 <p className="text-stone-400 text-xs mt-1 leading-relaxed">
-                  Betal semesterkontingent, sommerleir og drakt trygt med Vipps QR-koder.
+                  600 kr (barn) / 750 kr (voksne) pr. halvår. Behov for støtte til kontingent? Ta kontakt med Kittel.
                 </p>
               </div>
             </div>

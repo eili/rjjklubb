@@ -275,38 +275,39 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                 Må jeg være i god form for å begynne?
               </h4>
               <p className="leading-relaxed">
-                Nei, absolutt ikke! Formen, styrken og smidigheten bygger du opp gradvis på matten. 
-                Våre teknikker baserer seg på biomekanikk fremfor rå styrke.
+                Nei! Hos oss får du funksjonell styrke og kommer i form med meningsfylt trening. 
+                Du lærer bevegelse, koordinasjon, smertekontroll og kroppsbeherskelse i ditt eget tempo.
               </p>
             </div>
 
             <div className="space-y-1.5 p-4 rounded-xl bg-stone-50 border border-stone-100">
               <h4 className="font-bold text-stone-900 text-sm">
-                Hva er aldersgrensen?
+                Hva er aldersgrensen og treningstidene?
               </h4>
               <p className="leading-relaxed">
-                Vi har barnegrupper fra 8 år, ungdomsgrupper (13–17 år) og voksengrupper fra 18 til 70+ år. 
-                Kampsport er en livslang vei uansett alder.
+                Barnepartiene er fra 2. klasse (7–14 år) på tirsdager kl. 17:00 (nybegynnere/gult) og kl. 18:10 (oransje+). 
+                Voksenpartiet er fra 15 år på torsdager kl. 19:30–21:00. Treningene følger skoleruta.
               </p>
             </div>
 
             <div className="space-y-1.5 p-4 rounded-xl bg-stone-50 border border-stone-100">
               <h4 className="font-bold text-stone-900 text-sm">
-                Er det farlig eller mye skader?
+                Hva koster det – og finnes det støtteordning?
               </h4>
               <p className="leading-relaxed">
-                Tradisjonell Ju Jitsu hos oss har svært lav skadefrekvens. Første bud er alltid 
-                respekt, god oppvarming og kontrollert utførelse med umiddelbar klapp-ut (mairi).
+                Treningsavgiften er 600 kr pr. halvår for barn (7–14 år) og 750 kr pr. halvår for voksne (15+ år), 
+                pluss årlig klubb- (100 kr) og forbundskontingent (180/250 kr). Har man behov for støtte til 
+                kontingent/medlemsavgift, har vi støtteordning – ta kontakt med Kittel.
               </p>
             </div>
 
             <div className="space-y-1.5 p-4 rounded-xl bg-stone-50 border border-stone-100">
               <h4 className="font-bold text-stone-900 text-sm">
-                Kan jeg gradere meg videre i stilarten?
+                Hvor holder klubben til, og hva er postadressen?
               </h4>
               <p className="leading-relaxed">
-                Ja, vi har faste graderinger ved semesterslutt, og Dan-graderinger (sorte belter) 
-                administreres direkte under Soke Yamaue på sommerleiren i Risørhallen.
+                Dojoen ligger i underetasjen i Risørhallen, 4950 Risør. 
+                Postadresse: Risør Ju Jutsu Klubb c/o Kittel Bernhard Gjernes, Krags gate 120, 4950 Risør (Org.nr: 996 292 940).
               </p>
             </div>
           </div>

@@ -16,8 +16,12 @@ export const Footer: React.FC<FooterProps> = ({ clubConfig, onSelectTab, onOpenA
           {/* Col 1: Club info */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-stone-900 border border-stone-800 flex items-center justify-center text-amber-500 font-heading text-xl font-bold">
-                柔
+              <div className="w-12 h-12 rounded-full bg-white p-0.5 border-2 border-amber-500/70 flex items-center justify-center shadow shrink-0 overflow-hidden">
+                <img
+                  src="/rjjk-logo.png"
+                  alt="Risør Ju Jutsu Klubb logo"
+                  className="w-full h-full object-contain rounded-full"
+                />
               </div>
               <div>
                 <h3 className="text-stone-100 font-heading font-bold text-base tracking-wider">
@@ -27,13 +31,13 @@ export const Footer: React.FC<FooterProps> = ({ clubConfig, onSelectTab, onOpenA
               </div>
             </div>
             <p className="text-xs leading-relaxed text-stone-400">
-              Tradisjonell japansk kampsport med direkte røtter til samuraienes koryu-skoler. 
-              Vi trener autentisk selvforsvar, disiplin, leddlåser og kast under veiledning av {clubConfig.sokeName} i {clubConfig.sokeCity}.
+              Tradisjonell kampkunst og moderne selvforsvar i underetasjen i Risørhallen. 
+              Vi skaper mestring, trygghet, samhold og respekt for liten og stor under veiledning av {clubConfig.sokeName} i {clubConfig.sokeCity}.
             </p>
-            <div className="pt-2">
+            <div className="pt-2 flex flex-wrap gap-2">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-stone-900 border border-stone-800 text-xs text-stone-300">
                 <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                <span>Tilknyttet Hombu Dojo København</span>
+                <span>Org.nr: 996 292 940</span>
               </div>
             </div>
           </div>
@@ -49,7 +53,7 @@ export const Footer: React.FC<FooterProps> = ({ clubConfig, onSelectTab, onOpenA
                   onClick={() => onSelectTab('tradisjon')}
                   className="hover:text-amber-400 transition-colors text-left"
                 >
-                  Hva er Tradisjonell Japansk Ju Jitsu?
+                  Hva er Ju Jutsu? (Goho & Juho)
                 </button>
               </li>
               <li>
@@ -82,7 +86,7 @@ export const Footer: React.FC<FooterProps> = ({ clubConfig, onSelectTab, onOpenA
                   onClick={() => onSelectTab('vipps')}
                   className="hover:text-[#ff5b24] transition-colors text-left font-medium"
                 >
-                  Vipps Betaling (Vipps #{clubConfig.vippsNumber})
+                  Priser & Vipps Betaling (#{clubConfig.vippsNumber})
                 </button>
               </li>
               <li>
@@ -99,7 +103,7 @@ export const Footer: React.FC<FooterProps> = ({ clubConfig, onSelectTab, onOpenA
           {/* Col 3: Dojo & Training */}
           <div>
             <h4 className="text-stone-200 font-semibold text-sm tracking-wide uppercase mb-4">
-              Dojo & Beliggenhet
+              Dojo & Treningstider
             </h4>
             <div className="space-y-3 text-xs text-stone-400">
               <div className="flex items-start gap-2.5">
@@ -112,14 +116,15 @@ export const Footer: React.FC<FooterProps> = ({ clubConfig, onSelectTab, onOpenA
               <div className="flex items-start gap-2.5">
                 <Clock className="w-4 h-4 text-stone-500 mt-0.5 shrink-0" />
                 <div>
-                  <p className="text-stone-300 font-medium">Treningstider:</p>
-                  <p>Mandag, Tirsdag, Torsdag: 17:30 – 20:30</p>
-                  <p>Lørdag: 11:00 – 13:00</p>
+                  <p className="text-stone-300 font-medium">Treningstider (følger skoleruta):</p>
+                  <p>Tirsdag: 17:00–18:00 (Barn nybeg./gult)</p>
+                  <p>Tirsdag: 18:10–19:20 (Barn viderek.)</p>
+                  <p>Torsdag: 19:30–21:00 (Voksne 15+ år)</p>
                 </div>
               </div>
               <div className="flex items-start gap-2.5">
                 <Shield className="w-4 h-4 text-stone-500 mt-0.5 shrink-0" />
-                <p>Nyopptak hver måned. Gratis prøvetime for alle interesserte.</p>
+                <p>Inntak stort sett hele året. Gratis uforpliktende prøvetid for barn (fra 2. kl.) og voksne.</p>
               </div>
             </div>
           </div>
@@ -155,7 +160,7 @@ export const Footer: React.FC<FooterProps> = ({ clubConfig, onSelectTab, onOpenA
                   </span>
                 </div>
                 <p className="text-[11px] text-stone-500 mt-1">
-                  Merk betaling med utøvers navn og semester.
+                  Vi har også støtteordning for kontingent – ta kontakt med Kittel.
                 </p>
               </div>
             </div>
@@ -165,7 +170,7 @@ export const Footer: React.FC<FooterProps> = ({ clubConfig, onSelectTab, onOpenA
         {/* Bottom bar */}
         <div className="border-t border-stone-900 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-600">
           <div>
-            © {new Date().getFullYear()} {clubConfig.clubName}. Alle rettigheter reservert. 
+            © 2008–{new Date().getFullYear()} {clubConfig.clubName} (RJJK). Alle rettigheter reservert. 
             Stilart under tilsyn av {clubConfig.sokeName} ({clubConfig.sokeCity}).
           </div>
           <div className="flex items-center gap-4">
