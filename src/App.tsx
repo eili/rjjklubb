@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { PageTab, ClubConfig, Instructor, SummerCampInfo, TrainingClass, VippsProduct, AdminMFAConfig, SiteContent, MediaItem, Member } from './types';
+import clubLogo from './assets/rjjk-logo.png';
 import { 
   initialClubConfig, 
   initialInstructors, 
@@ -99,7 +100,14 @@ function migrateLegacyClasses(clsList: TrainingClass[]): { data: TrainingClass[]
 }
 
 function migrateLegacyMediaLibrary(items: MediaItem[]): { data: MediaItem[]; changed: boolean } {
-  if (items.some((item) => item.id === 'media-logo' || item.url === '/rjjk-logo.png')) {
+  const hasBrokenLogoUrl = items.some((item) => item.id === 'media-logo' && item.url === '/rjjk-logo.png');
+  if (hasBrokenLogoUrl) {
+    return {
+      data: items.map((item) => (item.id === 'media-logo' ? { ...item, url: clubLogo } : item)),
+      changed: true,
+    };
+  }
+  if (items.some((item) => item.id === 'media-logo' || item.url === clubLogo)) {
     return { data: items, changed: false };
   }
   return { data: [initialMediaLibrary[0], ...items], changed: true };
@@ -414,7 +422,7 @@ export default function App() {
                     className="p-6 rounded-2xl bg-stone-50 border border-stone-200 hover:border-amber-500/60 hover:shadow-md transition-all cursor-pointer group"
                   >
                     <div className="w-12 h-12 rounded-full bg-white border border-stone-200 p-1 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform overflow-hidden shadow-xs">
-                      <img src="/rjjk-logo.png" alt="Risør Ju Jutsu Klubb" className="w-full h-full object-contain rounded-full" />
+                      <img src={clubLogo} alt="Risør Ju Jutsu Klubb" className="w-full h-full object-contain rounded-full" />
                     </div>
                     <h3 className="font-heading font-bold text-lg text-stone-900 group-hover:text-amber-700 transition-colors">
                       Hva er Ju Jutsu?

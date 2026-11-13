@@ -1,5 +1,6 @@
 import React from 'react';
 import { ClubConfig, PageTab, SiteContent } from '../types';
+import clubLogo from '../assets/rjjk-logo.png';
 import { 
   ChevronRight, 
   ShieldCheck, 
@@ -61,7 +62,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <div className="flex flex-col sm:flex-row sm:items-center gap-5">
               <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-white p-1.5 shadow-2xl shadow-amber-500/20 border-2 border-amber-400/80 shrink-0 overflow-hidden">
                 <img
-                  src="/rjjk-logo.png"
+                  src={clubLogo}
                   alt="Risør Ju Jutsu Klubb – Offisiell rund logo"
                   className="w-full h-full object-contain rounded-full"
                 />

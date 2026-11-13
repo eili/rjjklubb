@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { Member, TrialBooking } from '../types';
 import { STANDARD_RANKS, DEFAULT_SEMESTERS } from '../data/initialData';
+import clubLogo from '../assets/rjjk-logo.png';
 import { 
   Users, 
   Plus, 
@@ -1008,7 +1009,7 @@ export const MemberList: React.FC<MemberListProps> = ({
             <div className="flex justify-between items-center border-b-2 border-stone-900 pb-3 mb-4">
               <div className="flex items-center gap-3">
                 <img
-                  src="/rjjk-logo.png"
+                  src={clubLogo}
                   alt="Risør Ju Jutsu Klubb"
                   className="w-12 h-12 rounded-full object-contain border border-stone-300 bg-white shrink-0"
                 />

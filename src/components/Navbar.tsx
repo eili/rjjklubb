@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { PageTab, ClubConfig } from '../types';
+import clubLogo from '../assets/rjjk-logo.png';
 import { 
   Menu, 
   X, 
@@ -97,7 +98,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Official Round Club Crest */}
             <div className="w-12 h-12 rounded-full bg-white p-0.5 border-2 border-amber-500/70 flex items-center justify-center shadow-md group-hover:border-amber-400 group-hover:scale-105 transition-all overflow-hidden shrink-0">
               <img
-                src="/rjjk-logo.png"
+                src={clubLogo}
                 alt="Risør Ju Jutsu Klubb logo"
                 className="w-full h-full object-contain rounded-full"
               />

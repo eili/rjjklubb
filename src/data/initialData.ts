@@ -1,4 +1,5 @@
 import { ClubConfig, Instructor, SummerCampInfo, TrainingClass, VippsProduct, CampPhoto, AdminMFAConfig, SiteContent, MediaItem, Member } from '../types';
+import clubLogo from '../assets/rjjk-logo.png';
 
 export const initialMFAConfig: AdminMFAConfig = {
   isEnabled: true,
@@ -385,7 +386,7 @@ export const initialMediaLibrary: MediaItem[] = [
   {
     id: 'media-logo',
     title: 'Risør Ju Jutsu Klubb – Offisiell Rund Logo',
-    url: '/rjjk-logo.png',
+    url: clubLogo,
     category: 'tradisjon',
     source: 'preset',
     photographer: 'Risør Ju Jutsu Klubb',

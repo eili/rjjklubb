@@ -1,5 +1,6 @@
 import React from 'react';
 import { ClubConfig, PageTab } from '../types';
+import clubLogo from '../assets/rjjk-logo.png';
 import { 
   MapPin, 
   Navigation, 
@@ -69,7 +70,7 @@ export const LocationSection: React.FC<LocationSectionProps> = ({
                 {/* Overlay Pin Badge */}
                 <div className="absolute top-4 left-4 bg-stone-900/90 text-white px-3.5 py-2 rounded-xl backdrop-blur-md border border-stone-700 shadow-lg flex items-center gap-2.5">
                   <img
-                    src="/rjjk-logo.png"
+                    src={clubLogo}
                     alt="RJJK"
                     className="w-7 h-7 rounded-full bg-white p-0.5 object-contain shrink-0"
                   />

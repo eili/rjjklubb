@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ClubConfig } from '../types';
+import clubLogo from '../assets/rjjk-logo.png';
 import { X, CheckCircle2, ChevronRight, ArrowLeft } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { submitTrialBookingToFirestore } from '../lib/firebase';
@@ -96,7 +97,7 @@ export const TrialBookingModal: React.FC<TrialBookingModalProps> = ({
         <div className="bg-stone-900 text-white px-5 py-4 flex items-center justify-between border-b border-stone-800 shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-full bg-white p-0.5 border border-amber-400/70 flex items-center justify-center overflow-hidden shrink-0">
-              <img src="/rjjk-logo.png" alt="Risør Ju Jutsu Klubb" className="w-full h-full object-contain rounded-full" />
+              <img src={clubLogo} alt="Risør Ju Jutsu Klubb" className="w-full h-full object-contain rounded-full" />
             </div>
             <div>
               <h3 id="trial-modal-title" className="font-heading font-bold text-sm text-white">

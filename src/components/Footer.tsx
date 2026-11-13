@@ -1,6 +1,7 @@
 import React from 'react';
 import { ClubConfig, PageTab } from '../types';
 import { MapPin, Phone, Mail, Clock, Shield, Heart } from 'lucide-react';
+import clubLogo from '../assets/rjjk-logo.png';
 
 interface FooterProps {
   clubConfig: ClubConfig;
@@ -18,7 +19,7 @@ export const Footer: React.FC<FooterProps> = ({ clubConfig, onSelectTab, onOpenA
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-white p-0.5 border-2 border-amber-500/70 flex items-center justify-center shadow shrink-0 overflow-hidden">
                 <img
-                  src="/rjjk-logo.png"
+                  src={clubLogo}
                   alt="Risør Ju Jutsu Klubb logo"
                   className="w-full h-full object-contain rounded-full"
                 />
